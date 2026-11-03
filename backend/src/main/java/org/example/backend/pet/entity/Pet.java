@@ -33,7 +33,7 @@ public class Pet {
     private PetPersonality personality;
 
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PetLifeStage lifeStage;
 
