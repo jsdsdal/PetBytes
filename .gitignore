@@ -1,0 +1,19 @@
+# IDE
+.idea/
+*.iml
+
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+dist/
+npm-debug.log*
+
+# Java / Maven
+target/
+
+# Environment variables
+.env
+.env.*
+!.env.example
