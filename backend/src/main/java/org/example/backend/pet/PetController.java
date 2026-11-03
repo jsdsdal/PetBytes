@@ -27,4 +27,6 @@ public class PetController {
     public PetResponse getPet(@PathVariable Long id) {
         return petService.getPet(id);
     }
+
+
 }
