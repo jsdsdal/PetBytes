@@ -65,18 +65,15 @@ public class Pet {
         stats.addHunger(-amount);
     }
 
+
+    // getters + setters
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
@@ -85,17 +82,7 @@ public class Pet {
         return stats;
     }
 
-    public void setStats(PetStats stats) {
-        this.stats = stats;
-    }
-
-    public LocalDateTime getBornAt() {
-        return bornAt;
-    }
-
-    public void setBornAt(LocalDateTime bornAt) {
-        this.bornAt = bornAt;
-    }
+    public void setBornAt(LocalDateTime bornAt) { this.bornAt = bornAt; }
 
     public LocalDateTime getLastSimulatedAt() {
         return lastSimulatedAt;
