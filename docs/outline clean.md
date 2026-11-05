@@ -114,16 +114,16 @@ En delt DialogueProvider interface her med udskiftelige implementeringer:
 Scripted behøver ikke bygges endnu. Den er relevant til en fallback hvis fx. AI API ikke virker, eller man ville fjerne AI helt.
 
 ## Modul struktur
-`auth`- autentifikation og JWT
-`user`- konto og bruger info
-`pet` - pet state og lifecycle
-`personality` - personligheds konfiguration, både bruger og pet
-`simulation` - tid, progression og autonom adfærd
-`interaction` - spiller interaktion og historik
-`inventory`- tilgængelige ressourcer for spiller + pet
-`ai` - geminii implemmentation
-`dialogue`- dialog hierarki, logik osv
-`shared` - fælles utilities og delte typer (tbd)
+- `auth`- autentifikation og JWT
+- `user`- konto og bruger info
+- `pet` - pet state og lifecycle
+- `personality` - personligheds konfiguration, både bruger og pet
+- `simulation` - tid, progression og autonom adfærd
+- `interaction` - spiller interaktion og historik
+- `inventory`- tilgængelige ressourcer for spiller + pet
+- `ai` - geminii implemmentation
+- `dialogue`- dialog hierarki, logik osv
+- `shared` - fælles utilities og delte typer (tbd)
 
 ## Guidelines
 
