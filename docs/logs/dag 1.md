@@ -97,15 +97,15 @@ fx vild personlighed = zoomies
 hvor en stille personlighed aldrig løber
 
 
-![[mermaid-diagram.png]]
+![mermaid-diagram](https://github.com/jsdsdal/PetBytes/blob/main/docs/logs/assets/mermaid-diagram.png?raw=true)
 
 # postman test
 
-![[Pasted image 20261103215402.png]]
-
+![Pasted image 20261103215402.png
+](https://github.com/jsdsdal/PetBytes/blob/main/docs/logs/assets/Pasted%20image%2020261103215402.png?raw=true)
 vores entity mapping virker! super fedt.
 
-![[Pasted image 20261103215501.png]]
+![Pasted image 20261103215501.png](https://github.com/jsdsdal/PetBytes/blob/main/docs/logs/assets/Pasted%20image%2020261103215501.png)
 
 og den persisterer.
 alt er godt
