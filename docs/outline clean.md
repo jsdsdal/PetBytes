@@ -1,6 +1,6 @@
 # PetBytes
 
-En tamagothi-inspireret virtuel pet applikation.
+En tamagotchi-inspireret virtuel pet applikation.
 
 Sit kæledyr har persisterende behov, personlighedstræk, og autonom opførsel.
 Brugere kan interagere med denne, give den ting og sager, og kommunikere med den.
@@ -13,8 +13,12 @@ Nuværende teknologi (TBD):
 - **Deployment:** Docker / Docker Compose
 
 Langsigtet retning:
-PRojektet skal ideelt kunne udvikles separat fra dets individuelle dele, fx Gemini og Spring.
+Projektet skal ideelt kunne udvikles separat fra dets individuelle dele, fx Gemini og Spring.
 Dvs. delene skal helst undgå coupling til den eksisterende tech stack.
+
+Modsat de projekter vi er vant til, har jeg inddelt packages efter domæne.
+hvorfor? -> der er mange bevægende dele, som bliver svære at finde rundt i hvis der pludselig er 50 klasser i "services" fx.
+derudover giver det også bedre mental separation af domæner til at overholde nedenstående - netop at hver feature er modulært bygget.
 
 ## Arkitektur
 Vi hæfter os ved følgende principper
