@@ -58,3 +58,7 @@ Han beskriver også hvordan man kan lave spil i Spring. Bl.a vha. beans i stor s
 Spring bliver åbenbart også brugt i gambling.
 Dette giver mening, da Spring lader udvikleren bestemme en masse ting fra server-siden uden at klienten behøver at være til stede / responsiv. 
 Vi prøver!
+
+
+Spring @Component, @Service, og @Repository: </br>
+https://www.javathinking.com/blog/component-vs-repository-and-service-in-spring/#component
