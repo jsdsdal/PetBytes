@@ -3,17 +3,17 @@ Vi laver vores projektstruktur.
 
 Indtil videre:
 
-# packages
-ai
-auth
-config
-dialogue
-interaction
-inventory
-personality
+**packages:**
+- ai
+- auth
+- config
+- dialogue
+- interaction
+- inventory
+- personality
 	/pet
 	/user
-pet
+- pet
 	/dto
 		FeedRequest
 		PetResponse
@@ -22,9 +22,9 @@ pet
 	PetService
 	PetRepository
 	PetStateService
-shared
-simulation
-user
+- shared
+- simulation
+- user
 
 ---
 
