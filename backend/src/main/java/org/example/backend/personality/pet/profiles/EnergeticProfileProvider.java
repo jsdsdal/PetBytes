@@ -6,12 +6,12 @@ import org.example.backend.personality.pet.PetPersonality;
 import org.springframework.stereotype.Component;
 
 @Component
-public class RambunctiousProfileProvider
+public class EnergeticProfileProvider
         implements PersonalityProfileProvider {
 
     @Override
     public PetPersonality personality() {
-        return PetPersonality.RAMBUNCTIOUS;
+        return PetPersonality.ENERGETIC;
     }
 
     @Override
