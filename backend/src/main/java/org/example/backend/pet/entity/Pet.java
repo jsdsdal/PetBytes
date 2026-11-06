@@ -2,6 +2,9 @@ package org.example.backend.pet.entity;
 
 import jakarta.persistence.*;
 import org.example.backend.personality.pet.PetPersonality;
+import org.example.backend.user.User;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Entity
@@ -19,10 +22,10 @@ public class Pet {
     private PetStats stats;
 
     @Column(nullable = false)
-    private LocalDateTime bornAt;
+    private Instant bornAt;
 
     @Column(nullable = false)
-    private LocalDateTime lastSimulatedAt;
+    private Instant lastSimulatedAt;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -37,6 +40,25 @@ public class Pet {
     @Column(nullable = false)
     private PetLifeStage lifeStage;
 
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User owner;
+
+    // ny constructor
+//    public Pet(String name, PetSpecies species, PetPersonality personality, User owner) {
+//        this.name = name;
+//        this.species = species;
+//        this.personality = personality;
+//        this.stats = PetStats.initial();
+//        this.owner = owner;
+//        this.bornAt = LocalDateTime.now();
+//        this.lastSimulatedAt = this.bornAt;
+//        this.lifeStage = PetLifeStage.KID;
+//    }
+
+    // ny getter
+    // public User getOwner() { return owner; }
+
     protected Pet() {} // JPA vil gerne have en tom constructor
 
     public Pet(String name, PetSpecies species,
@@ -47,13 +69,13 @@ public class Pet {
         this.personality = personality;
         this.stats = PetStats.initial();
 
-        this.bornAt = LocalDateTime.now();
+        this.bornAt = Instant.now();
         this.lastSimulatedAt = this.bornAt;
 
         this.lifeStage = PetLifeStage.KID;
     }
 
-    public void updateLastSimulatedAt(LocalDateTime timestamp) {
+    public void updateLastSimulatedAt(Instant timestamp) {
         this.lastSimulatedAt = timestamp;
     }
 
@@ -82,13 +104,23 @@ public class Pet {
         return stats;
     }
 
-    public void setBornAt(LocalDateTime bornAt) { this.bornAt = bornAt; }
+    public void setStats(PetStats stats) {
+        this.stats = stats;
+    }
 
-    public LocalDateTime getLastSimulatedAt() {
+    public Instant getBornAt() {
+        return bornAt;
+    }
+
+    public void setBornAt(Instant bornAt) {
+        this.bornAt = bornAt;
+    }
+
+    public Instant getLastSimulatedAt() {
         return lastSimulatedAt;
     }
 
-    public void setLastSimulatedAt(LocalDateTime lastSimulatedAt) {
+    public void setLastSimulatedAt(Instant lastSimulatedAt) {
         this.lastSimulatedAt = lastSimulatedAt;
     }
 
