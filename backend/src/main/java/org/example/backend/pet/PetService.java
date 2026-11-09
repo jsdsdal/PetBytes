@@ -10,10 +10,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Service
 public class PetService {
 
-    private final PetRepository petRepository;
+    private final PetRepository repository;
 
-    public PetService(PetRepository petRepository) {
-        this.petRepository = petRepository;
+    public PetService(PetRepository repository) {
+        this.repository = repository;
     }
 
     public PetResponse createPet(CreatePetRequest request) {
@@ -24,14 +24,14 @@ public class PetService {
                 request.personality()
         );
 
-        Pet savedPet = petRepository.save(pet);
+        Pet savedPet = repository.save(pet);
 
         return PetResponse.from(savedPet);
     }
 
     public PetResponse getPet(Long id) {
 
-        Pet pet = petRepository.findById(id)
+        Pet pet = repository.findById(id)
                 .orElseThrow(() ->
                         new ResponseStatusException(
                                 HttpStatus.NOT_FOUND,
