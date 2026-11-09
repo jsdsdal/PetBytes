@@ -10,6 +10,7 @@ import org.springframework.cglib.core.Local;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 
 @Entity
@@ -36,7 +37,7 @@ public class ActivityLog {
     private Integer amount;   // optional idk
 
 
-    public ActivityLog(Pet pet, ActivityType type, Instant occurredAt, Integer amount) {
+    public ActivityLog(Pet pet, ActivityType type, Integer amount, Instant occurredAt) {
         this.pet = pet;
         this.type = type;
         this.amount = amount;
@@ -45,6 +46,9 @@ public class ActivityLog {
 
     public ActivityLog() {
 
+    }
+
+    public <V, K> ActivityLog(Pet pet, String activity, Map<K,V> amount) {
     }
 
     public Long getId() { return id; }
