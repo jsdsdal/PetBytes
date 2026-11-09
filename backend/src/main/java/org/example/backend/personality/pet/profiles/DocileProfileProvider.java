@@ -3,7 +3,9 @@ package org.example.backend.personality.pet.profiles;
 import org.example.backend.personality.pet.PersonalityProfile;
 import org.example.backend.personality.pet.PersonalityProfileProvider;
 import org.example.backend.personality.pet.PetPersonality;
+import org.springframework.stereotype.Component;
 
+@Component
 public class DocileProfileProvider
         implements PersonalityProfileProvider {
 
