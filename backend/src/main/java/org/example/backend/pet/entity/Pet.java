@@ -83,10 +83,6 @@ public class Pet {
         this.lifeStage = newStage;
     }
 
-    public void feed(int amount) {
-        stats.addHunger(-amount);
-    }
-
 
     // getters + setters
     public Long getId() {
@@ -96,6 +92,7 @@ public class Pet {
     public String getName() {
         return name;
     }
+
     public void setName(String name) {
         this.name = name;
     }
@@ -147,4 +144,22 @@ public class Pet {
     public void setLifeStage(PetLifeStage lifeStage) {
         this.lifeStage = lifeStage;
     }
+
+    // stats change
+    public void feed(int amount) {
+        stats.addHunger(-amount);
+        stats.addHappiness(2); // small happiness boost from being fed
+    }
+
+    public void play(int amount) {
+        stats.addHappiness(amount);
+        stats.addEnergy(-amount / 2);
+        stats.addHunger(-amount / 4);
+    }
+
+    public void sleep(int amount) {
+        stats.addEnergy(amount);
+        stats.addHunger(-amount / 3);
+    }
+
 }

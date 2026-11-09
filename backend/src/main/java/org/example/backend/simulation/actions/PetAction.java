@@ -1,4 +1,4 @@
 package org.example.backend.simulation.actions;
 
-public class PetAction {
+public interface PetAction {
 }
