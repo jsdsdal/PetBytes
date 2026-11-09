@@ -4,9 +4,9 @@ import org.example.backend.personality.pet.PetPersonality;
 
 public enum PetSpecies {
     CAT("cat", "A small, whiskered creature.", PetPersonality.SPOILED),
-    FOX("fox", "A sharp-eared, bushy-tailed creature.", PetPersonality.ENERGETIC),
+    FOX("fox", "A sharp-eared, bushy-tailed creature.", PetPersonality.DOCILE),
     OWL("owl", "A round-eyed, feathered creature.", PetPersonality.CONTEMPLATIVE),
-    TURTLE("turtle", "A slow, shelled creature.", PetPersonality.DOCILE);
+    TURTLE("turtle", "A slow, shelled creature.", PetPersonality.ENERGETIC);
 
     private final String designKey;
     private final String description;
