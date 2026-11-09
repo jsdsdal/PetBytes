@@ -40,24 +40,24 @@ public class Pet {
     @Column(nullable = false)
     private PetLifeStage lifeStage;
 
-//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-//    @JoinColumn(name = "user_id", nullable = false)
-//    private User owner;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User owner;
 
     // ny constructor
-//    public Pet(String name, PetSpecies species, PetPersonality personality, User owner) {
-//        this.name = name;
-//        this.species = species;
-//        this.personality = personality;
-//        this.stats = PetStats.initial();
-//        this.owner = owner;
-//        this.bornAt = LocalDateTime.now();
-//        this.lastSimulatedAt = this.bornAt;
-//        this.lifeStage = PetLifeStage.KID;
-//    }
+    public Pet(String name, PetSpecies species, PetPersonality personality, User owner) {
+        this.name = name;
+        this.species = species;
+        this.personality = personality;
+        this.stats = PetStats.initial();
+        this.owner = owner;
+        this.bornAt = Instant.now();
+        this.lastSimulatedAt = this.bornAt;
+        this.lifeStage = PetLifeStage.KID;
+    }
 
-    // ny getter
-    // public User getOwner() { return owner; }
+     // ny getter
+    public User getOwner() { return owner; }
 
     protected Pet() {} // JPA vil gerne have en tom constructor
 
