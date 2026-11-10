@@ -1,6 +1,8 @@
 package org.example.backend.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import org.example.backend.security.JWTTokenGeneratorFilter;
+import org.example.backend.security.JWTTokenValidatorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -34,16 +37,17 @@ public class SecurityConfig {
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
                         config.setExposedHeaders(Arrays.asList("Authorization"));
-                        config.setExposedHeaders(Arrays.asList("Athorization"));
                         config.setMaxAge(3600L);
                         return config;
                     }
 
                 })).csrf(csrf -> csrf.disable())
+                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/pets/**").authenticated()
                         .requestMatchers("/api/user").authenticated()
-                        .requestMatchers("/api/register", "/error").permitAll())
+                        .requestMatchers("/api/register", "/error","/api/dologin").permitAll())
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }
