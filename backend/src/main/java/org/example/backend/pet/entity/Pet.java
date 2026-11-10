@@ -31,7 +31,7 @@ public class Pet {
     private PetSpecies species;
 
     @Column(nullable = false)
-    private boolean unique = false; // som shiny pokemon
+    private boolean variant = false; // som shiny pokemon
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -50,10 +50,10 @@ public class Pet {
     private User owner;
 
     // ny constructor
-    public Pet(String name, PetSpecies species, boolean unique, PetPersonality personality, PetBond petBond, User owner) {
+    public Pet(String name, PetSpecies species, boolean variant, PetPersonality personality, PetBond petBond, User owner) {
         this.name = name;
         this.species = species;
-        this.unique = false;
+        this.variant = false;
         this.personality = personality;
         this.petBond = PetBond.STRANGER;
         this.stats = PetStats.initial();
