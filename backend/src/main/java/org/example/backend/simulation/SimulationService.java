@@ -20,25 +20,21 @@ public class SimulationService {
         this.profileRegistry = profileRegistry;
     }
 
+    private static final Duration MIN_STEP = Duration.ofMinutes(10);
+    private static final double BASE_HUNGER = 5.0;   // points per hour
+    private static final double BASE_ENERGY = 3.0;   // points per hour
+
     @Transactional
-    public void materialize(Pet pet) {
-        Duration elapsed = Duration.between(pet.getLastSimulatedAt(), Instant.now());
-        double hours = elapsed.toMinutes() / 60.0;
-
-        if (hours < 0.01) return; // ligegyldigt at simulere, skal justeres
-
-        // base decay rates (pr time)
-        double hungerRate = 5.0;
-        double energyRate = 3.0;
-
-        // Personality modifiers
-        PersonalityProfile profile = profileRegistry.getProfile(pet.getPersonality());
-        hungerRate *= profile.hungerRate();
-        energyRate *= profile.energyDepletionRate();
-
-        pet.getStats().addHunger((int) (hungerRate * hours));
-        pet.getStats().addEnergy((int) (-energyRate * hours));
-
-        pet.setLastSimulatedAt(Instant.now());
+    public void materialize(Pet pet, Instant now) {
+        Duration elapsed = Duration.between(pet.getLastSimulatedAt(), now);
+        if (elapsed.compareTo(MIN_STEP) < 0) return;
+        double hours = elapsed.toSeconds() / 3600.0;
+        PersonalityProfile p = profileRegistry.getProfile(pet.getPersonality());
+        pet.getStats().addHunger(decay(BASE_HUNGER * p.hungerRate(), hours));
+        pet.getStats().addEnergy(-decay(BASE_ENERGY * p.energyDepletionRate(), hours));
+        pet.updateLastSimulatedAt(now);
+    }
+    private static int decay(double perHour, double hours) {
+        return (int) Math.round(perHour * hours);
     }
 }

@@ -5,7 +5,6 @@ import org.example.backend.personality.pet.PetPersonality;
 import org.example.backend.user.User;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "pets")
@@ -31,10 +30,16 @@ public class Pet {
     @Column(nullable = false)
     private PetSpecies species;
 
+    @Column(nullable = false)
+    private boolean variant = false; // som shiny pokemon
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private PetPersonality personality;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PetBond petBond;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -45,10 +50,12 @@ public class Pet {
     private User owner;
 
     // ny constructor
-    public Pet(String name, PetSpecies species, PetPersonality personality, User owner) {
+    public Pet(String name, PetSpecies species, boolean variant, PetPersonality personality, PetBond petBond, User owner) {
         this.name = name;
         this.species = species;
+        this.variant = false;
         this.personality = personality;
+        this.petBond = PetBond.STRANGER;
         this.stats = PetStats.initial();
         this.owner = owner;
         this.bornAt = Instant.now();
