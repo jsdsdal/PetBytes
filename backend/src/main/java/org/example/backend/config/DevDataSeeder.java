@@ -4,6 +4,7 @@ import org.example.backend.personality.pet.PetPersonality;
 import org.example.backend.personality.user.UserPersonality;
 import org.example.backend.pet.PetRepository;
 import org.example.backend.pet.entity.Pet;
+import org.example.backend.pet.entity.PetBond;
 import org.example.backend.pet.entity.PetSpecies;
 import org.example.backend.user.User;
 import org.example.backend.user.UserRepository;
@@ -29,7 +30,7 @@ public class DevDataSeeder implements CommandLineRunner {
             User dev = new User("dev", "dev@example.com", "{noop}dev", UserPersonality.ANALYTICAL);
             userRepository.save(dev);
 
-            Pet pet = new Pet("Mochi", PetSpecies.CAT, PetPersonality.CONTEMPLATIVE, dev);
+            Pet pet = new Pet("Mochi", PetSpecies.CAT, false, PetPersonality.CONTEMPLATIVE, PetBond.COMPANION, dev);
             petRepository.save(pet);
         }
     }
