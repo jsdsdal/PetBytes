@@ -1,24 +1,21 @@
 package org.example.backend.simulation.actions;
 
 import org.example.backend.interaction.PetInteractionService;
+import org.example.backend.personality.pet.PersonalityProfile;
 import org.example.backend.pet.entity.Pet;
 import org.springframework.stereotype.Component;
 
 @Component
 public class EatAction implements PetAction {
+    private static final int FEED_AMOUNT = 15;
+
+    @Override public String name() { return "eat"; }
 
     @Override
-    public String name() { return "EAT"; }
-
-    @Override
-    public double score(Pet pet) {
-        int hunger = pet.getStats().getHungerLevel();
-        // højere hunger → højere utility. normaliseres til 0..1.
-        return hunger / 100.0;
+    public double score(Pet pet, PersonalityProfile profile) {
+        return pet.getStats().getHungerLevel() / 100.0;
     }
 
     @Override
-    public void execute(Pet pet, PetInteractionService interactions) {
-        interactions.feed(pet.getId(), 20);
-    }
+    public void execute(Pet pet, PetActionLogService actions) { actions.feed(pet, FEED_AMOUNT); }
 }

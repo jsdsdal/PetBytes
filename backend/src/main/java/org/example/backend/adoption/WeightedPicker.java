@@ -1,6 +1,5 @@
 package org.example.backend.adoption;
 
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -8,8 +7,6 @@ import java.util.Random;
 
 @Component
 public class WeightedPicker {
-
-    @Bean Random random() { return new Random(); } //spring kan ikke genkende random uden bean
 
     private final Random random;
     public WeightedPicker(Random random) { this.random = random; }

@@ -45,7 +45,7 @@ public class PetStateService {
         return pet;
     }
 
-    static ResponseStatusException conflict(String message) {
+    public static ResponseStatusException conflict(String message) {
         return new ResponseStatusException(HttpStatus.CONFLICT, message);
     }
 }

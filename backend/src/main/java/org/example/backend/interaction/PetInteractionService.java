@@ -7,6 +7,7 @@ import org.example.backend.pet.entity.Pet;
 import org.example.backend.simulation.ActivityLog;
 import org.example.backend.simulation.ActivityLogRepository;
 import org.example.backend.simulation.ActivityType;
+import org.example.backend.simulation.actions.PetActionLogService;
 import org.example.backend.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -21,35 +22,31 @@ import java.util.function.Consumer;
 public class PetInteractionService {
 
     private final PetStateService state;
-    private final ActivityLogRepository logs;
-    private final Clock clock;
+    private final PetActionLogService actions;
 
-    public PetInteractionService(PetStateService state, ActivityLogRepository logs, Clock clock) {
+    public PetInteractionService(PetStateService state, PetActionLogService actions) {
         this.state = state;
-        this.logs = logs;
-        this.clock = clock;
+        this.actions = actions;
     }
 
     @Transactional
     public PetResponse feed(Long petId, User user, int amount) {
-        return interact(petId, user, ActivityType.FED, amount, pet -> pet.feed(amount));
+        Pet pet = state.getOwnedActive(petId, user);
+        actions.feed(pet, amount);
+        return PetResponse.from(pet);
     }
 
     @Transactional
     public PetResponse play(Long petId, User user, int amount) {
-        return interact(petId, user, ActivityType.PLAYED, amount, pet -> pet.play(amount));
+        Pet pet = state.getOwnedActive(petId, user);
+        actions.play(pet, amount);
+        return PetResponse.from(pet);
     }
 
     @Transactional
     public PetResponse sleep(Long petId, User user, int amount) {
-        return interact(petId, user, ActivityType.NAPPED, amount, pet -> pet.sleep(amount));
-    }
-
-    private PetResponse interact(Long petId, User user, ActivityType type,
-                                 int amount, Consumer<Pet> action) {
         Pet pet = state.getOwnedActive(petId, user);
-        action.accept(pet);
-        logs.save(new ActivityLog(pet, type, amount, clock.instant()));
+        actions.sleep(pet, amount);
         return PetResponse.from(pet);
     }
 }

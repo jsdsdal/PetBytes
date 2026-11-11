@@ -4,6 +4,8 @@ import org.example.backend.pet.entity.Pet;
 import org.example.backend.pet.entity.PetBond;
 import org.example.backend.simulation.ActivityLog;
 import org.example.backend.simulation.ActivityType;
+import org.springframework.stereotype.Service;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
@@ -13,6 +15,8 @@ import java.util.List;
 Udregner spillerens bond til sit pet ud fra observerbar data gemt i loggen.
  Ikke testet.
  */
+
+@Service
 public final class BondCalculator {
 
     // vægte, skal tunes

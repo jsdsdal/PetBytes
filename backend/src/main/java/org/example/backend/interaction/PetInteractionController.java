@@ -26,8 +26,17 @@ public class PetInteractionController {
         return interactions.feed(petId, currentUser.from(principal), amountOf(request));
     }
 
-    @PostMapping("/play")  /* same shape → interactions.play  */
-    @PostMapping("/sleep") /* same shape → interactions.sleep */
+    @PostMapping("/play")
+    public PetResponse play(@PathVariable Long petId, Principal principal,
+                            @Valid @RequestBody(required = false) InteractionRequest request) {
+        return interactions.play(petId, currentUser.from(principal), amountOf(request));
+    }
+
+    @PostMapping("/sleep")
+    public PetResponse sleep(@PathVariable Long petId, Principal principal,
+                             @Valid @RequestBody(required = false) InteractionRequest request) {
+        return interactions.sleep(petId, currentUser.from(principal), amountOf(request));
+    }
 
     private static int amountOf(InteractionRequest request) {
         return request != null ? request.amount() : DEFAULT_AMOUNT;

@@ -9,9 +9,14 @@ import org.example.backend.personality.user.UserPersonality;
 import org.example.backend.pet.entity.Pet;
 import org.example.backend.pet.entity.PetBond;
 import org.example.backend.pet.entity.PetSpecies;
+import org.example.backend.simulation.ActivityLogRepository;
+import org.example.backend.simulation.AutonomousBehaviorService;
 import org.example.backend.simulation.SimulationService;
+import org.example.backend.simulation.bond.BondCalculator;
 import org.example.backend.user.User;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -19,17 +24,38 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import org.mockito.Mockito;
+
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.when;
+
 class SimulationServiceTest {
+
     static final Instant T0 = Instant.parse("2026-11-06T08:00:00Z");
-    final SimulationService service = new SimulationService(new PersonalityProfileRegistry(
-            List.of(new EnergeticProfileProvider(), new ContemplativeProfileProvider())));
+
+    final ActivityLogRepository logs = Mockito.mock(ActivityLogRepository.class);
+    final BondCalculator bond = Mockito.mock(BondCalculator.class);
+    final AutonomousBehaviorService autonomous = Mockito.mock(AutonomousBehaviorService.class);
+
+    final SimulationService service = new SimulationService(
+            new PersonalityProfileRegistry(List.of(
+                    new EnergeticProfileProvider(),
+                    new ContemplativeProfileProvider())),
+            logs, bond, autonomous);
+
+    @BeforeEach
+    void setUp() {
+        when(logs.findTop5ByPetIdOrderByOccurredAtDesc(any())).thenReturn(List.of());
+        when(logs.countByPetId(any())).thenReturn(0L);
+        when(bond.calculate(any(), any(), anyLong())).thenReturn(PetBond.STRANGER);
+    }
 
     Pet petWith(PetPersonality personality) {
         User owner = new User("t", "t@t.dk", "x", UserPersonality.ANALYTICAL);
-        Pet pet = new Pet("Test", PetSpecies.CAT, false, personality, PetBond.STRANGER, owner);
-        pet.setLastSimulatedAt(T0);
-        return pet;
+        return Pet.adopt("Test", PetSpecies.CAT, personality, false, owner, T0);
     }
+
+
 
     @Test
     void energeticGetsHungrierThanContemplative() {

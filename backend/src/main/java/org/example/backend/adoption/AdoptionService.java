@@ -58,6 +58,10 @@ public class AdoptionService {
         return respond(offer, user);
     }
 
+    private Optional<AdoptionOffer> pendingOffer(User user) {
+        return offers.findByUserIdAndStatus(user.getId(), OfferStatus.PENDING);
+    }
+
     @Transactional
     public AdoptionOfferResponse decline(User user, Long offerId) {
         AdoptionOffer offer = requirePending(user, offerId);
