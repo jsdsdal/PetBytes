@@ -32,7 +32,7 @@ public class SimulationService {
         PersonalityProfile p = profileRegistry.getProfile(pet.getPersonality());
         pet.getStats().addHunger(decay(BASE_HUNGER * p.hungerRate(), hours));
         pet.getStats().addEnergy(-decay(BASE_ENERGY * p.energyDepletionRate(), hours));
-        pet.updateLastSimulatedAt(now);
+        pet.markSimulated(now);
     }
     private static int decay(double perHour, double hours) {
         return (int) Math.round(perHour * hours);
