@@ -12,6 +12,8 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 @Profile("dev")
 public class DevDataSeeder implements CommandLineRunner {
@@ -30,7 +32,7 @@ public class DevDataSeeder implements CommandLineRunner {
             User dev = new User("dev", "dev@example.com", "{noop}dev", UserPersonality.ANALYTICAL);
             userRepository.save(dev);
 
-            Pet pet = new Pet("Mochi", PetSpecies.CAT, false, PetPersonality.CONTEMPLATIVE, PetBond.COMPANION, dev);
+            Pet.adopt("Mochi", PetSpecies.CAT, PetPersonality.CONTEMPLATIVE, false, dev, Instant.now())
             petRepository.save(pet);
         }
     }
