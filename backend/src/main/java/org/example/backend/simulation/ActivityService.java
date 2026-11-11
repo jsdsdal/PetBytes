@@ -29,12 +29,4 @@ public class ActivityService {
                 .map(ActivityResponse::from).toList();
     }
 
-    // ActivityService — player-facing feed
-    public List<ActivityResponse> getRecentForPet(Long petId) {
-        return logs
-                .findByPetIdAndTypeNotOrderByTimestampDesc(petId, ActivityType.SAID)
-                .stream()
-                .map(ActivityResponse::from)
-                .toList();
-    }
 }
