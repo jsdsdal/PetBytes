@@ -48,8 +48,6 @@ public class ActivityLog {
 
     }
 
-    public <V, K> ActivityLog(Pet pet, String activity, Map<K,V> amount) {
-    }
 
     public Long getId() { return id; }
     public Pet getPet() { return pet; }

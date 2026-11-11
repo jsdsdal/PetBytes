@@ -24,6 +24,12 @@ public class PetInteractionService {
     private final ActivityLogRepository logs;
     private final Clock clock;
 
+    public PetInteractionService(PetStateService state, ActivityLogRepository logs, Clock clock) {
+        this.state = state;
+        this.logs = logs;
+        this.clock = clock;
+    }
+
     @Transactional
     public PetResponse feed(Long petId, User user, int amount) {
         return interact(petId, user, ActivityType.FED, amount, pet -> pet.feed(amount));

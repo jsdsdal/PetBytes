@@ -6,7 +6,6 @@ public enum ActivityType {
     PLAYED("The pet played on its own."),
     PETTED("The player petted the pet."),
     ADOPTED("The player has adopted the pet.");
-
     private final String description;
 
     ActivityType(String description) {

@@ -3,11 +3,13 @@ package org.example.backend.simulation;
 import org.example.backend.personality.pet.PersonalityProfile;
 import org.example.backend.personality.pet.PersonalityProfileRegistry;
 import org.example.backend.pet.entity.Pet;
+import org.example.backend.pet.entity.PetBond;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
 
 // O(1) pr request
@@ -24,6 +26,7 @@ public class SimulationService {
     private static final double BASE_HUNGER = 5.0;   // points per hour
     private static final double BASE_ENERGY = 3.0;   // points per hour
 
+
     @Transactional
     public void materialize(Pet pet, Instant now) {
         Duration elapsed = Duration.between(pet.getLastSimulatedAt(), now);
@@ -33,6 +36,13 @@ public class SimulationService {
         pet.getStats().addHunger(decay(BASE_HUNGER * p.hungerRate(), hours));
         pet.getStats().addEnergy(-decay(BASE_ENERGY * p.energyDepletionRate(), hours));
         pet.markSimulated(now);
+        // Bond is a pet property, updated by simulation — not by any consumer.
+        List<ActivityLog> recent = activityLogRepository
+                .findTop5ByPetIdOrderByOccurredAtDesc(pet.getId());
+        long total = activityLogRepository.countByPetId(pet.getId());
+
+        PetBond newBond = bondCalculator.calculate(pet, recent, total);
+        pet.setBond(newBond);
     }
     private static int decay(double perHour, double hours) {
         return (int) Math.round(perHour * hours);

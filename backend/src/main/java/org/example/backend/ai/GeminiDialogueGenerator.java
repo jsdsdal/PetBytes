@@ -1,11 +1,12 @@
 package org.example.backend.ai;
 
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
 @Service
-@Profile("!offline")
+@ConditionalOnProperty(name = "dialogue.provider", havingValue = "gemini")
 public class GeminiDialogueGenerator implements AiDialogueGenerator {
 
     private final ChatClient chatClient;
