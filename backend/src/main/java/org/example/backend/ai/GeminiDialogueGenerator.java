@@ -4,7 +4,6 @@ import org.example.backend.ai.dto.GeminiContent;
 import org.example.backend.ai.dto.GeminiRequest;
 import org.example.backend.ai.dto.GeminiResponse;
 import org.example.backend.ai.dto.GeminiSystemInstruction;
-import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
