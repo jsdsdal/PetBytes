@@ -10,4 +10,6 @@ public interface ActivityLogRepository extends JpaRepository<ActivityLog, Long> 
     List<ActivityLog> findByPetIdAndTypeNotOrderByOccurredAtDesc(Long petId, ActivityType type);
     List<ActivityLog> findTop5ByPetIdAndTypeOrderByOccurredAtDesc(Long petId, ActivityType type);
     long countByPetIdAndTypeNot(Long petId, ActivityType type);
+    List<ActivityLog> findTop5ByPetIdOrderByOccurredAtDesc(Long petId);
+    long countByPetId(Long petId);
 }

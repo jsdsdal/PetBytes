@@ -3,7 +3,9 @@ package org.example.backend.pet;
 import org.example.backend.pet.dto.PetResponse;
 import org.example.backend.pet.entity.Pet;
 import org.example.backend.user.CurrentUser;
+import org.example.backend.user.User;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -41,11 +43,6 @@ public class PetController {
         return petService.activate(id, currentUser.from(principal));
     }
 
-    @GetMapping("/{id}/monologue")
-    public MonologueResponse monologue(@PathVariable Long id) {
-        Pet pet = petStateService.requireOwnedActivePet(id);
-        String text = aiDialogueService.generateAndPersist(pet);
-        return new MonologueResponse(text);
-    }
+
 
 }

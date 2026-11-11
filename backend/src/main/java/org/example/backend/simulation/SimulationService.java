@@ -4,6 +4,7 @@ import org.example.backend.personality.pet.PersonalityProfile;
 import org.example.backend.personality.pet.PersonalityProfileRegistry;
 import org.example.backend.pet.entity.Pet;
 import org.example.backend.pet.entity.PetBond;
+import org.example.backend.simulation.bond.BondCalculator;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,17 +17,19 @@ import java.util.List;
 @Service
 public class SimulationService {
 
-    private final PersonalityProfileRegistry profileRegistry;
-
-    public SimulationService(PersonalityProfileRegistry profileRegistry) {
-        this.profileRegistry = profileRegistry;
-    }
-
     private static final Duration MIN_STEP = Duration.ofMinutes(10);
     private static final double BASE_HUNGER = 5.0;   // points per hour
     private static final double BASE_ENERGY = 3.0;   // points per hour
 
+    private final PersonalityProfileRegistry profileRegistry;
+    private final ActivityLogRepository activityLogRepository;
+    private final BondCalculator bondCalculator;
 
+    public SimulationService(PersonalityProfileRegistry profileRegistry, ActivityLogRepository activityLogRepository, BondCalculator bondCalculator) {
+        this.profileRegistry = profileRegistry;
+        this.activityLogRepository = activityLogRepository;
+        this.bondCalculator = bondCalculator;
+    }
     @Transactional
     public void materialize(Pet pet, Instant now) {
         Duration elapsed = Duration.between(pet.getLastSimulatedAt(), now);
@@ -42,7 +45,7 @@ public class SimulationService {
         long total = activityLogRepository.countByPetId(pet.getId());
 
         PetBond newBond = bondCalculator.calculate(pet, recent, total);
-        pet.setBond(newBond);
+        pet.setPetBond(newBond);
     }
     private static int decay(double perHour, double hours) {
         return (int) Math.round(perHour * hours);
