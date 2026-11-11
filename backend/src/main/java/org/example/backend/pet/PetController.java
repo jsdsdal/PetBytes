@@ -1,6 +1,5 @@
 package org.example.backend.pet;
 
-import org.example.backend.pet.dto.CreatePetRequest;
 import org.example.backend.pet.dto.PetResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
