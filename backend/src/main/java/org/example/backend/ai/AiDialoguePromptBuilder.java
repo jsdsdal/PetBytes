@@ -1,6 +1,5 @@
 package org.example.backend.ai;
 
-import org.example.backend.personality.pet.PersonalityProfile;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
