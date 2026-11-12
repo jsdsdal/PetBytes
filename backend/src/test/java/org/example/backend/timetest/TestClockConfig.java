@@ -5,12 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Primary;
 
 import java.time.Instant;
+import java.time.ZoneOffset;
 
 @TestConfiguration
-class TestClockConfig {
+public class TestClockConfig {
+
     @Bean
     @Primary
-    MutableClock testClock() {
-        return new MutableClock(Instant.parse("2026-11-06T08:00:00Z"));
+    public MutableClock mutableClock() {
+        return new MutableClock(Instant.parse("2026-11-11T10:00:00Z"), ZoneOffset.UTC);
     }
 }

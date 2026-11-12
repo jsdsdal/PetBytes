@@ -1,12 +1,24 @@
 package org.example.backend.timetest;
 
-import java.time.*;
+import java.time.Clock;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.ZoneId;
 
 public class MutableClock extends Clock {
-    private Instant now;
-    public MutableClock(Instant start) { this.now = start; }
-    public void advance(Duration d) { now = now.plus(d); }
-    @Override public Instant instant() { return now; }
-    @Override public ZoneId getZone() { return ZoneOffset.UTC; }
-    @Override public Clock withZone(ZoneId z) { return this; }
+
+    private Instant instant;
+    private final ZoneId zone;
+
+    public MutableClock(Instant instant, ZoneId zone) {
+        this.instant = instant;
+        this.zone = zone;
+    }
+
+    public void setInstant(Instant instant) { this.instant = instant; }
+    public void advance(Duration d)         { this.instant = this.instant.plus(d); }
+
+    @Override public ZoneId getZone()       { return zone; }
+    @Override public Clock withZone(ZoneId z) { return new MutableClock(instant, z); }
+    @Override public Instant instant()      { return instant; }
 }

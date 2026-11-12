@@ -4,6 +4,8 @@ import org.example.backend.interaction.PetInteractionService;
 import org.example.backend.personality.pet.PersonalityProfile;
 import org.example.backend.pet.entity.Pet;
 
+
+
 public interface PetAction {
     String name();
     double score(Pet pet, PersonalityProfile profile);
