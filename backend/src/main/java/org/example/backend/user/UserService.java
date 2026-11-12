@@ -31,10 +31,10 @@ public class UserService implements UserDetailsService {
     public User register(RegisterRequest request) {
 
         if (userRepository.existsByUsername(request.username())) {
-            throw new IllegalArgumentException("User alredy exits");
+            throw new IllegalArgumentException("User already exists.");
         }
         if (userRepository.existsByEmail(request.email())) {
-            throw new IllegalArgumentException("Email alredy exits");
+            throw new IllegalArgumentException("Email already exists.");
         }
 
         User user = new User(

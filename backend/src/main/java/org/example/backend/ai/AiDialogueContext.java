@@ -14,5 +14,6 @@ public record AiDialogueContext(
         int hunger,
         int happiness,
         int energy,
-        List<String> recentEvents
+        List<String> recentEvents,
+        List<String> previousMonologues // NEW: The pet's memory
 ) {}
