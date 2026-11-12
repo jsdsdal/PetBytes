@@ -11,7 +11,7 @@ public record ActivityResponse(
                 log.getType(),
                 log.getAmount(),
                 log.getOccurredAt(),
-                log.getType().getDescription(log.isPlayerInitiated()), 
+                log.getType().getDescription(log.isPlayerInitiated()),
                 log.isPlayerInitiated()
         );
     }

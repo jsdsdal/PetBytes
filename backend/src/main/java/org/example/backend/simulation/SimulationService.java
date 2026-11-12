@@ -17,8 +17,8 @@ import java.util.List;
 @Service
 public class SimulationService {
 
-    private static final Duration MIN_STEP = Duration.ofMinutes(10);
-    private static final Duration TICK_INTERVAL = Duration.ofHours(2);  // one autonomous action per ~2h away
+    private static final Duration MIN_STEP = Duration.ofSeconds(15);    // 15sek min step
+    private static final Duration TICK_INTERVAL = Duration.ofSeconds(30); // gør noget hver 30 sek
     private static final int MAX_CATCHUP_TICKS = 3;                     // hard cap
     private static final double BASE_HUNGER = 5.0;
     private static final double BASE_ENERGY = 3.0;
