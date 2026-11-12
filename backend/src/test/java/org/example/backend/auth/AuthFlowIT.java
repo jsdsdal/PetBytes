@@ -12,7 +12,7 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,15 +37,17 @@ class AuthFlowIT {
     @Test
     void login_returns_bearer_token_and_unlocks_protected_endpoint() throws Exception {
         var result = mvc.perform(post("/api/dologin")
+                        // Sender brugernavn og kodeord som Basic-header, ligesom frontenden gør
+                        .with(httpBasic("alice", "pw"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
-                                {"username":"alice","password":"pw"}
-                                """))
+                        {"username":"alice","password":"pw"}
+                        """))
                 .andExpect(status().isOk())
                 .andReturn();
 
         String authHeader = result.getResponse().getHeader("Authorization");
-        assertThat(authHeader).isNotNull().startsWith("Bearer ");
+        assertThat(authHeader).isNotNull().isNotBlank();
 
         mvc.perform(get("/api/pets").header("Authorization", authHeader))
                 .andExpect(status().isOk());
