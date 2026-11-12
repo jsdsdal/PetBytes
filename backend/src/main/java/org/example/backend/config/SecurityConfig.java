@@ -33,7 +33,7 @@ public class SecurityConfig {
                     @Override
                     public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
                         CorsConfiguration config = new CorsConfiguration();
-                        config.setAllowedOrigins(Collections.singletonList("http://localhost:5173"));  // 5173 i stedet for 4200, fordi I bruger Vite/React (4200 er Angular)
+                        config.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://jsdsal.dk", "http://jsdsal.dk")); //virker i cloudflare tunnel også på selfhost
                         config.setAllowedMethods(Collections.singletonList("*"));
                         config.setAllowCredentials(true);
                         config.setAllowedHeaders(Collections.singletonList("*"));
