@@ -43,13 +43,13 @@ class PetLifecycleIT {
     ActivityLogRepository logs;
     @Autowired
     MutableClock clock;
-
-    Pet savedPet() {
-        User owner = users.save(new User("t", "t@t.dk", "x", UserPersonality.ANALYTICAL));
-        Pet pet = new Pet("Mochi", PetSpecies.CAT, false, PetPersonality.ENERGETIC, PetBond.STRANGER, owner);
-        pet.setLastSimulatedAt(clock.instant());
-        return pets.save(pet);
-    }
+//
+//    Pet savedPet() {
+//        User owner = users.save(new User("t", "t@t.dk", "x", UserPersonality.ANALYTICAL));
+//        Pet pet = new Pet("Mochi", PetSpecies.CAT, false, PetPersonality.ENERGETIC, PetBond.STRANGER, owner);
+//        pet.setLastSimulatedAt(clock.instant());
+//        return pets.save(pet);
+//    }
 
     // mere følger
 }
