@@ -27,9 +27,21 @@ public class AiDialoguePromptBuilder {
         return """
                 Current state: hunger is %s, happiness is %s, energy is %s.
                 Recent events (newest first): %s
-                Say something to your owner.
+                
+                Here are the last few things you said:
+                %s
+                
+                Say something to your owner. Do NOT repeat your previous lines. 
+                Keep it fresh based on what just happened.
                 """.formatted(hungerWord(c.hunger()), level(c.happiness()),
-                level(c.energy()), events(c.recentEvents()));
+                level(c.energy()), events(c.recentEvents()),
+                monologues(c.previousMonologues()));
+    }
+
+    private static String monologues(List<String> m) {
+        if (m.isEmpty()) return "(You haven't spoken yet.)";
+        // ældste først -> kronologisk rækkefølge.
+        return String.join("\n", m.reversed());
     }
 
     private static String hungerWord(int h) {          // 100 = starving
