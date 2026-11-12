@@ -1,23 +1,16 @@
 export async function apiFetch(path, option = {}) {
     const token = sessionStorage.getItem("token")
-    const headers = { "content-Type" : "application/json" }
+    const headers = { ...(option.body ? { "Content-Type": "application/json" } : {}) }
+    if (token) headers.Authorization = token
 
-    if (token) {
-        headers.Authorization = token
-    }
-
-    const requestOption = {
-        method: option.method,
+    const response = await fetch(path, {
+        method: option.method ?? "GET",
         body: option.body,
-        headers: headers,
-    }
-
-    const response = await fetch(path, requestOption)
+        headers,
+    })
 
     if (!response.ok) {
-        throw new Error('Request failed (' + response.status + ')')
+        throw new Error(`Request failed (${response.status})`)
     }
-
-    const data = await response.json()
-    return data
+    return response.json()
 }
