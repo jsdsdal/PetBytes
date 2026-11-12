@@ -1,8 +1,8 @@
 package org.example.backend.config;
 
 import jakarta.servlet.http.HttpServletRequest;
-import org.example.backend.security.JWTTokenGeneratorFilter;
-import org.example.backend.security.JWTTokenValidatorFilter;
+import org.example.backend.auth.JWTTokenGeneratorFilter;
+import org.example.backend.auth.JWTTokenValidatorFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;

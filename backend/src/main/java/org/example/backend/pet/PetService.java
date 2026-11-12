@@ -1,44 +1,64 @@
 package org.example.backend.pet;
 
-import org.example.backend.pet.dto.CreatePetRequest;
 import org.example.backend.pet.dto.PetResponse;
 import org.example.backend.pet.entity.Pet;
+import org.example.backend.pet.entity.PetStatus;
+import org.example.backend.user.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.time.Clock;
+import java.util.List;
 
 @Service
 public class PetService {
 
-    private final PetRepository repository;
+    private final PetRepository pets;
+    private final PetStateService state;
+    private final Clock clock;
 
-    public PetService(PetRepository repository) {
-        this.repository = repository;
+    public PetService(PetRepository pets, PetStateService state, Clock clock) {
+        this.pets = pets;
+        this.state = state;
+        this.clock = clock;
     }
 
-    public PetResponse createPet(CreatePetRequest request) {
-
-        Pet pet = new Pet(
-                request.name(),
-                request.species(),
-                request.personality()
-        );
-
-        Pet savedPet = repository.save(pet);
-
-        return PetResponse.from(savedPet);
+    @Transactional
+    public List<PetResponse> listMine(User user) {
+        return pets.findByOwnerIdOrderByBornAtDesc(user.getId()).stream()
+                .map(state::refreshed).map(PetResponse::from).toList();
     }
 
-    public PetResponse getPet(Long id) {
+    @Transactional
+    public PetResponse getPet(Long id, User user) {
+        return PetResponse.from(state.getOwned(id, user));
+    }
 
-        Pet pet = repository.findById(id)
-                .orElseThrow(() ->
-                        new ResponseStatusException(
-                                HttpStatus.NOT_FOUND,
-                                "Pet not found"
-                        )
-                );
-
+    @Transactional
+    public PetResponse shelve(Long id, User user) {
+        Pet pet = state.getOwnedActive(id, user);       // applies elapsed time, then freezes
+        pet.shelve();
         return PetResponse.from(pet);
+    }
+
+    @Transactional
+    public PetResponse activate(Long id, User user) {
+        Pet pet = state.getOwned(id, user);
+        requireStatus(pet, PetStatus.INACTIVE);
+        requireNoActivePet(user);
+        pet.reactivate(clock.instant());
+        return PetResponse.from(pet);
+    }
+
+    private void requireStatus(Pet pet, PetStatus expected) {
+        if (pet.getStatus() != expected) throw PetStateService.conflict("Pet is " + pet.getStatus());
+    }
+
+    private void requireNoActivePet(User user) {
+        if (pets.existsByOwnerIdAndStatus(user.getId(), PetStatus.ACTIVE)) {
+            throw PetStateService.conflict("Shelve your current pet first");
+        }
     }
 }
