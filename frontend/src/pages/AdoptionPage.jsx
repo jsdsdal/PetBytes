@@ -58,7 +58,7 @@ export default function AdoptionPage({ onAdopted }) {
     }
 
     if (loading) return <p>Looking for a pet...</p>
-    if (error) return <p className="error">{error}</p>
+    if (!offer) return <p className="error">{error || "No offer available."}</p>
     if (!offer) return <p>No offer available.</p>
 
     return (
@@ -88,7 +88,7 @@ export default function AdoptionPage({ onAdopted }) {
             <Button type="submit" disabled={submitting || !name.trim()}>
                 Adopt
             </Button>
-            <Button type="button" variant="link" onClick={handleDecline} disabled={submitting}>
+            <Button type="button" variant="link" onClick={handleDecline} disabled={submitting || offer.declinesLeft <= 0}>
                 Not this one — show me another
             </Button>
         </form>

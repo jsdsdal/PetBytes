@@ -1,83 +1,372 @@
-body {
-    font-family: "Press Start 2P", sans-serif;
-    line-height: 1.6;
-    background: #e0f2fe;
+@import url('https://fonts.googleapis.com/css2?family=VT323&family=Press+Start+2P&display=swap');
+
+:root {
+    --ink: #1a1a1a;
+    --win-bg: #fdfbf7;
+    --win-border-light: #ffffff;
+    --win-border-dark: #a0a0a0;
+    --accent-yellow: #ffcb05;
+    --accent-green: #78C850;
+    --accent-red: #ff6b6b;
+
+    --font-body: 'VT323', monospace;
+    --font-header: 'Press Start 2P', monospace;
 }
 
-h1 { font-size: 32px; }
-h2 { font-size: 16px; }
-p  { font-size: 12px; }
+* {
+    box-sizing: border-box;
+}
 
-.page {
-    min-height: 100vh;
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-body);
+    font-size: 22px;
+    color: var(--ink);
+    height: 100vh;
+    overflow: hidden;
+    image-rendering: pixelated;
+
+    /* Landscape Background */
+    background-color: #8bd2e8;
+    background-image:
+        /* Grass */
+            repeating-linear-gradient(0deg, transparent, transparent 4px, rgba(0,0,0,0.05) 4px, rgba(0,0,0,0.05) 8px),
+            repeating-linear-gradient(90deg, transparent, transparent 4px, rgba(0,0,0,0.05) 4px, rgba(0,0,0,0.05) 8px),
+                /* split mellem himmel og græs */
+            linear-gradient(to bottom,
+            #8bd2e8 0%, #8bd2e8 55%,
+            #9ce07a 55%, #9ce07a 100%
+            );
+}
+
+/* pixel skyer */
+body::before, body::after {
+    content: "";
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: #ffffff;
+    z-index: 0;
+    pointer-events: none;
+}
+
+body::before {
+    top: 10%;
+    left: 15%;
+    box-shadow:
+            20px 0 0 #fff, 40px 0 0 #fff, 60px 0 0 #fff,
+            -20px 20px 0 #fff, 0 20px 0 #fff, 20px 20px 0 #fff, 40px 20px 0 #fff, 60px 20px 0 #fff, 80px 20px 0 #fff,
+            0 40px 0 #fff, 20px 40px 0 #fff, 40px 40px 0 #fff, 60px 40px 0 #fff;
+}
+
+body::after {
+    top: 25%;
+    right: 25%;
+    transform: scale(0.7);
+    box-shadow:
+            20px 0 0 #fff, 40px 0 0 #fff, 60px 0 0 #fff,
+            -20px 20px 0 #fff, 0 20px 0 #fff, 20px 20px 0 #fff, 40px 20px 0 #fff, 60px 20px 0 #fff, 80px 20px 0 #fff,
+            0 40px 0 #fff, 20px 40px 0 #fff, 40px 40px 0 #fff, 60px 40px 0 #fff;
+}
+
+.os-desktop {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+}
+
+/* --- Pixel Windows --- */
+.retro-window {
+    background: var(--win-bg);
+    border: 4px solid var(--ink);
+    /* Hard, pixelated drop shadow */
+    box-shadow: 6px 6px 0 rgba(0, 0, 0, 0.3);
     display: flex;
     flex-direction: column;
+    position: absolute;
+}
+
+.window-header {
+    background: var(--win-bg);
+    border-bottom: 4px solid var(--ink);
+    padding: 10px 12px;
+    display: flex;
     align-items: center;
     justify-content: center;
-    gap: 32px;
-    padding: 16px;
-}
-
-.pixel-box {
-    width: 100%;
-    max-width: 576px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    padding: 24px;
-    margin: 4px;
-    background: white;
-    box-shadow: var(--pixel-box-shadow);
-}
-
-.stack {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.stack button {
-    width: 100%;
-    white-space: normal;
-    height: auto;
-    min-height: 2.5rem;
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-}
-
-.muted {
+    position: relative;
+    font-family: var(--font-header);
     font-size: 10px;
-    color: #666;
+    text-transform: uppercase;
 }
 
-.error {
-    font-size: 10px;
-    color: #dc2626;
-}
-
-.stack input {
-    box-sizing: border-box;
-    width: calc(100% - 8px);
-}
-
-fieldset {
-    border: none;
-    padding: 0;
-    margin: 0;
-}
-
-.field {
+/* Mac triple dots (blocky) */
+.window-controls {
+    position: absolute;
+    left: 12px;
     display: flex;
-    flex-direction: column;
-    align-items: flex-start;
     gap: 8px;
 }
 
-.stat-bar {
+.window-controls span {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--ink);
+}
+
+.window-controls span:nth-child(1) { background: var(--accent-red); cursor: pointer; }
+.window-controls span:nth-child(2) { background: var(--accent-yellow); }
+.window-controls span:nth-child(3) { background: var(--accent-green); }
+
+.window-content {
+    padding: 16px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* --- Desktop Icons --- */
+.desktop-icons {
+    position: absolute;
+    top: 40px;
+    left: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.desk-icon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--ink);
+    font-family: var(--font-header);
+    font-size: 8px;
+    cursor: pointer;
+    text-shadow: 1px 1px 0 #fff;
+}
+
+.desk-icon-img {
+    width: 48px;
+    height: 48px;
+    background: var(--win-bg);
+    border: 4px solid var(--ink);
+    box-shadow: inset -4px -4px 0 var(--win-border-dark), inset 4px 4px 0 var(--win-border-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 24px;
+}
+
+/* --- Window Placement --- */
+.pet-window {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 420px;
+    height: 520px;
+    z-index: 10;
+}
+
+.log-window {
+    top: 60px;
+    right: 40px;
+    width: 360px;
+    height: 460px;
+    z-index: 5;
+}
+
+/* --- Pet Area --- */
+.stats-row {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.sprite-container {
+    flex: 1;
+    background: #e2f2d5;
+    border: 4px solid var(--ink);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    /* 8-bit grid pattern */
+    background-image:
+            repeating-linear-gradient(0deg, transparent, transparent 8px, rgba(0,0,0,0.05) 8px, rgba(0,0,0,0.05) 16px),
+            repeating-linear-gradient(90deg, transparent, transparent 8px, rgba(0,0,0,0.05) 8px, rgba(0,0,0,0.05) 16px);
+}
+
+.pet-sprite {
+    width: 160px;
+    height: 160px;
+    image-rendering: pixelated;
+    z-index: 2;
+    /* trosser rundt random */
+    animation: wander 6s infinite alternate steps(4);
+}
+
+@keyframes wander {
+    0% { transform: translate(-10px, 0px); }
+    25% { transform: translate(10px, -5px); }
+    50% { transform: translate(0px, 5px); }
+    75% { transform: translate(15px, 0px); }
+    100% { transform: translate(-5px, -10px); }
+}
+
+/*når den reagerer. overrider wander */
+.pet-sprite[data-reaction="feed"] { animation: shake 0.3s steps(2) 3; }
+.pet-sprite[data-reaction="play"] { animation: jump 0.4s steps(2) 2; }
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    50% { transform: translateX(10px); }
+    100% { transform: translateX(0); }
+}
+@keyframes jump {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-30px); }
+    100% { transform: translateY(0); }
+}
+
+@keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-12px); }
+    100% { transform: translateY(0px); }
+}
+
+/* Speech Bubble */
+.speech-bubble {
+    position: absolute;
+    top: 20px;
+    background: var(--win-bg);
+    border: 4px solid var(--ink);
+    padding: 12px;
+    width: 85%;
+    font-size: 24px;
+    line-height: 1;
+    z-index: 20;
+}
+
+/* Pixel tail til speech bubble */
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    bottom: -12px;
+    left: 24px;
+    width: 12px;
+    height: 12px;
+    background: var(--win-bg);
+    border-right: 4px solid var(--ink);
+    border-bottom: 4px solid var(--ink);
+    /* hårde kanter */
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 100%, 50% 50%, 0 50%);
+}
+
+/* --- Terminal Log --- */
+.activity-list {
+    list-style: none;
+    padding: 12px;
+    margin: 0;
+    font-family: var(--font-body);
+    font-size: 20px;
+    color: #1b5e20;
+    background: #dcedc1;
+    border: 1px solid var(--ink);
+    height: 100%;
+    overflow-y: auto;
+}
+
+.activity-list li {
+    display: flex;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 2px dashed #81c784;
+}
+
+.player-log { color: #d84315; }
+.pet-log { color: #2e7d32; }
+
+/* --- Pixel Stats --- */
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-family: var(--font-header);
+    font-size: 10px;
+}
+.stat-label { width: 70px; }
+.stat-value { width: 30px; text-align: right; }
+
+progress.stat-bar {
+    flex: 1;
     appearance: none;
-    width: 100%;
-    height: 16px;
-    border: 3px solid black;
-    background: white;
+    height: 20px;
+    border: 4px solid var(--ink);
+    background: #fff;
+}
+progress.stat-bar::-webkit-progress-bar { background: #fff; }
+progress.stat-bar.good::-webkit-progress-value { background: var(--accent-green); }
+progress.stat-bar.medium::-webkit-progress-value { background: var(--accent-yellow); }
+progress.stat-bar.low::-webkit-progress-value { background: var(--accent-red); }
+
+/* --- Floating Pixel Dock --- */
+.pixel-dock {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    border: 4px solid var(--ink);
+    /* Stepped box shadow */
+    box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.2), 8px 8px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 16px;
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    z-index: 100;
+}
+
+.dock-icon {
+    background: var(--win-bg);
+    border: 4px solid var(--ink);
+    width: 64px;
+    height: 64px;
+    font-family: var(--font-header);
+    font-size: 8px;
+    color: var(--ink);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    box-shadow: inset -4px -4px 0 var(--win-border-dark), inset 4px 4px 0 var(--win-border-light);
+    transition: transform 0.1s steps(2);
+}
+
+.dock-icon:hover:not(:disabled) {
+    transform: translateY(-8px);
+    background: var(--accent-yellow);
+}
+
+.dock-icon:active:not(:disabled) {
+    transform: translateY(0);
+    box-shadow: inset 4px 4px 0 var(--win-border-dark), inset -4px -4px 0 var(--win-border-light);
+}
+
+.dock-icon:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.dock-divider {
+    width: 4px;
+    height: 48px;
+    background: var(--ink);
+    margin: 0 4px;
 }

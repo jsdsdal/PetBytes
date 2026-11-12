@@ -1,118 +1,123 @@
 import './App.css'
-import { useState, useEffect } from 'react'
-import QuizPage from "@/pages/QuizPage.jsx";
-import LoginPage from "@/pages/LoginPage.jsx";
-import RegisterPage from "@/pages/RegisterPage.jsx";
-import AdoptionPage from "@/pages/AdoptionPage.jsx";
-import GamePage from "@/pages/GamePage.jsx";
-import { login, logout, register } from "@/api/userApi.js";
-import { getMyPets } from './api/petApi'
+import { useCallback, useEffect, useState } from 'react'
+import QuizPage from "@/pages/QuizPage.jsx"
+import LoginPage from "@/pages/LoginPage.jsx"
+import RegisterPage from "@/pages/RegisterPage.jsx"
+import AdoptionPage from "@/pages/AdoptionPage.jsx"
+import GamePage from "@/pages/GamePage.jsx"
+import { Button } from "@/components/ui/pixelact-ui/button"
+import { login, logout, register } from "@/api/userApi.js"
+import { getMyPets } from "@/api/petApi.js"
+import { UNAUTHORIZED_EVENT } from "@/api/apiFetch.js"
+
+// Game needs a pet that is ACTIVE. Having only shelved pets means: go adopt.
+async function landingScreen() {
+    try {
+        const pets = await getMyPets()
+        return pets.some((p) => p.status === 'ACTIVE') ? 'game' : 'adoption'
+    } catch (err) {
+        return err.status === 401 ? 'login' : 'offline'   // a 500 shouldn't log you out
+    }
+}
 
 function App() {
-    const [screen, setScreen] = useState('loading')                // CHANGED: was a ternary
+    const [screen, setScreen] = useState('loading')
     const [user, setUser] = useState(sessionStorage.getItem('username'))
-    const [newUser, setNewUser] = useState(null)
+    const [draft, setDraft] = useState(null)               // register form values
+    const [personality, setPersonality] = useState(null)   // quiz result, kept if signup fails
     const [registerError, setRegisterError] = useState("")
 
-    // kører ved start / reload
+    useEffect(() => {
+        const onExpired = () => { setUser(null); setScreen('login') }
+        window.addEventListener(UNAUTHORIZED_EVENT, onExpired)
+        return () => window.removeEventListener(UNAUTHORIZED_EVENT, onExpired)
+    }, [])
+
     useEffect(() => {
         if (!sessionStorage.getItem('token')) {
             setScreen('login')
             return
         }
-        resolveLandingScreen().then(setScreen)
+        landingScreen().then(setScreen)
     }, [])
 
-    // hjælper
-    async function resolveLandingScreen() {
-        try {
-            const pets = await getMyPets()
-            return pets.length > 0 ? 'game' : 'adoption'
-        } catch {
-            // token stale/invalid → start fresh
-            logout()
-            return 'login'
-        }
-    }
-
-    // async, router afhængigt om de skal have et pet
     async function handleLogin(username) {
         setUser(username)
-        setScreen(await resolveLandingScreen())
+        setScreen(await landingScreen())
     }
 
     function handleLogout() {
         logout()
         setUser(null)
-        setScreen("login")
+        setScreen('login')
     }
 
     function handleRegisterContinue(formData) {
-        setNewUser(formData)
+        setDraft(formData)
         setRegisterError('')
-        setScreen('quiz')
+        if (personality) createAccount(formData, personality)   // already took the quiz
+        else setScreen('quiz')
     }
 
-    // går direkte til adoption nu
-    async function handleQuizFinished(personality) {
+    function handleQuizFinished(result) {
+        setPersonality(result)
+        createAccount(draft, result)
+    }
+
+    async function createAccount(account, chosenPersonality) {
         try {
-            await register(newUser.username, newUser.email, newUser.password, personality)
-            await login(newUser.username, newUser.password)
-            setUser(newUser.username)
-            setScreen('adoption')
+            await register(account.username, account.email, account.password, chosenPersonality)
         } catch (err) {
             setRegisterError(err.message)
-            setScreen("register")
+            setScreen('register')
+            return
         }
+        try {
+            await login(account.username, account.password)
+            setUser(account.username)
+            setScreen('adoption')
+        } catch {
+            setScreen('login')   // account exists now; don't try to register it twice
+        }
+    }
+
+    const goToAdoption = useCallback(() => setScreen('adoption'), [])
+
+    if (screen === 'game') {
+        return <GamePage user={user} onLogout={handleLogout} onNoPet={goToAdoption} />
     }
 
     return (
         <main className="page">
             <h1>PetBytes</h1>
 
-            {/*loading*/}
             {screen === 'loading' && <p>Loading...</p>}
 
-            {/* loginskærm */}
-            {screen === 'login' && (
-                <LoginPage onLogin={handleLogin} onSignUp={() => setScreen("register")} />
+            {screen === 'offline' && (
+                <section className="pixel-box">
+                    <p>Can't reach the server.</p>
+                    <Button onClick={() => landingScreen().then(setScreen)}>Try again</Button>
+                </section>
             )}
 
-            {/* registrer */}
-            {screen === "register" && (
+            {screen === 'login' && (
+                <LoginPage onLogin={handleLogin} onSignUp={() => setScreen('register')} />
+            )}
+
+            {screen === 'register' && (
                 <RegisterPage
+                    initial={draft}
                     onContinue={handleRegisterContinue}
-                    onBack={() => setScreen("login")}
+                    onBack={() => setScreen('login')}
                     error={registerError}
                 />
             )}
 
-            {/* quizflow */}
             {screen === 'quiz' && <QuizPage onFinish={handleQuizFinished} />}
 
-            {/* adoption */}
-            {screen === "adoption" && (
-                <AdoptionPage onAdopted={() => setScreen("game")} />
-            )}
-
-          {/* Spillet laver vi i næste trin. Indtil da en velkomst. */}
-          {screen === 'game' && (
-              <section className="pixel-box">
-                  <p>Welcome, {user}!</p>
-                  <div className="stack">
-                      {/* Henter dine dyr med tokenen og skriver dem i konsollen */}
-                      <Button onClick={async () => console.log(await getMyPets())}>Test token</Button>
-                      <Button variant="link" onClick={handleLogout}>Log out</Button>
-                      {/* MIDLERTIDIGT: test af StatBar med faste tal */}
-                      <StatBar label="Food" value={80} />
-                      <StatBar label="Happy" value={40} />
-                      <StatBar label="Energy" value={10} />
-                  </div>
-              </section>
-          )}
-
-      </main>
-  )
+            {screen === 'adoption' && <AdoptionPage onAdopted={() => setScreen('game')} />}
+        </main>
+    )
 }
 
 export default App

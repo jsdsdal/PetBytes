@@ -1,128 +1,152 @@
 import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/pixelact-ui/button"
-import { getMyPets } from "@/api/petApi.js"
-import { apiFetch } from "@/api/apiFetch.js"
+import { usePet } from "@/hooks/usePet.js"
+import { useActivity } from "@/hooks/useActivity.js"
+import { useInteractions } from "@/hooks/useInteractions.js"
+import { useMonologue } from "@/hooks/useMonologue.js"
+import StatBar from "@/components/pet/StatBar.jsx"
 
-export default function GamePage({ user, onLogout }) {
-    const [pet, setPet] = useState(null)
-    const [activity, setActivity] = useState([])
-    const [monologue, setMonologue] = useState("")
-    const [loading, setLoading] = useState(true)
-    const [busy, setBusy] = useState(false)
-    const [error, setError] = useState("")
+export default function GamePage({ user, onLogout, onNoPet }) {
+    const { pet, status, error, version, apply, retry } = usePet()
+    const [notice, setNotice] = useState("")
 
+    const activity = useActivity(pet?.id, version, 10)
+    const interactions = useInteractions(pet?.id, { onUpdated: apply, onError: setNotice })
+    const monologue = useMonologue(pet?.id, { onError: setNotice })
+
+//snakker hver 45 s
     useEffect(() => {
-        loadPet()
-    }, [])
+        if (status !== "ready") return
 
-    async function loadPet() {
-        setLoading(true)
-        setError("")
-        try {
-            const pets = await getMyPets()
-            // backend kan opbevare både aktive og inaktive pets -> vi tager den aktive
-            const active = pets.find(p => p.status === "ACTIVE") ?? pets[0]
-            if (!active) {
-                setError("No pet found — go adopt one first.")
-                return
+        const interval = setInterval(() => {
+            // snakker kun hvis den ikke laver andet
+            if (!monologue.thinking && !interactions.busy) {
+                monologue.speak()
             }
-            setPet(active)
-            await loadActivity(active.id)
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setLoading(false)
-        }
+        }, 45000) // 45 seconds
+
+        return () => clearInterval(interval)
+    }, [status, monologue, interactions.busy])
+
+    function handleInteract(action) {
+        monologue.clear()
+        interactions.perform(action)
     }
 
-    async function loadActivity(petId) {
-        try {
-            const logs = await apiFetch(`/api/pets/${petId}/activity?limit=10`)
-            setActivity(logs)
-        } catch {
-            // activity er dekorativt
-        }
+    if (status === "loading" || status === "empty") {
+        return <div style={{ padding: 20, fontFamily: "'Press Start 2P'" }}>Booting PetBytes OS...</div>
     }
 
-    async function doAction(action) {
-        if (busy) return
-        setBusy(true)
-        setError("")
-        try {
-            const updated = await apiFetch(`/api/pets/${pet.id}/${action}`, { method: "POST" })
-            setPet(updated)
-            await loadActivity(pet.id)
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setBusy(false)
-        }
+    if (status === "error") {
+        return (
+            <div style={{ padding: 20, fontFamily: "'Press Start 2P'" }}>
+                <p>{error}</p>
+                <button className="dock-icon" onClick={retry}>RETRY</button>
+            </div>
+        )
     }
 
-    async function speak() {
-        if (busy) return
-        setBusy(true)
-        setError("")
-        try {
-            const data = await apiFetch(`/api/pets/${pet.id}/monologue`)
-            setMonologue(data.dialogue)
-        } catch (err) {
-            setError(err.message)
-        } finally {
-            setBusy(false)
-        }
-    }
-
-    if (loading) return <p>Loading your pet...</p>
-    if (!pet) return <p className="error">{error || "No pet found."}</p>
+    const spriteName = pet.species.toLowerCase()
+    const spriteUrl = `/sprites/${spriteName}.svg`
+    const isBusy = interactions.busy || monologue.thinking
 
     return (
-        <section className="pixel-box">
-            <p className="muted">Welcome, {user}!</p>
+        <div className="os-desktop">
 
-            <h2>{pet.name}</h2>
-            <p className="muted">
-                {pet.species} · {pet.personality}
-                {pet.variant && " ✨ (variant)"}
-            </p>
-
-            {/* Placeholder stats .
-                OBS: hunger er inverted (0 = full, 100 = starving). */}
-            <div className="stack">
-                <div>Hunger: {pet.hunger} (lower is better)</div>
-                <div>Happiness: {pet.happiness}</div>
-                <div>Energy: {pet.energy}</div>
+            {/* desktop icons */}
+            <div className="desktop-icons">
+                <div className="desk-icon">
+                    <div className="desk-icon-img">📄</div>
+                    <span>README</span>
+                </div>
+                <div className="desk-icon">
+                    <div className="desk-icon-img">📁</div>
+                    <span>ARCHIVE</span>
+                </div>
+                <div className="desk-icon">
+                    <div className="desk-icon-img">🗑️</div>
+                    <span>TRASH</span>
+                </div>
             </div>
 
-            <div className="stack">
-                <Button onClick={() => doAction("feed")} disabled={busy}>Feed</Button>
-                <Button onClick={() => doAction("play")} disabled={busy}>Play</Button>
-                <Button onClick={() => doAction("sleep")} disabled={busy}>Sleep</Button>
-                <Button onClick={speak} disabled={busy}>Say something</Button>
-            </div>
+            {/* activity log */}
+            <aside className="retro-window log-window">
+                <div className="window-header">
+                    <div className="window-controls"><span></span><span></span><span></span></div>
+                    <span>LOG_CHAT.EXE</span>
+                </div>
+                <div className="window-content" style={{ padding: 0 }}>
+                    <ul className="activity-list">
+                        {activity.length === 0 && <li>No data found...</li>}
+                        {activity.map(a => (
+                            <li key={a.id} className={a.playerInitiated ? "player-log" : "pet-log"}>
+                                <span>{a.playerInitiated ? "> YOU:" : "* PET:"}</span>
+                                <span>{a.description}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            </aside>
 
-            {monologue && (
-                <div className="pixel-box">
-                    <p><strong>{pet.name}:</strong> {monologue}</p>
+            {/* Main Pet Window */}
+            <main className="retro-window pet-window">
+                <div className="window-header">
+                    <div className="window-controls">
+                        <span onClick={onLogout} title="Log Out"></span>
+                        <span></span><span></span>
+                    </div>
+                    <span>PET_VIEW.EXE</span>
+                </div>
+                <div className="window-content">
+
+                    <div className="stats-row">
+                        <StatBar label="FOOD" value={100 - pet.hunger} />
+                        <StatBar label="HAPPY" value={pet.happiness} />
+                        <StatBar label="ENERGY" value={pet.energy} />
+                    </div>
+
+                    <div className="sprite-container">
+                        <img
+                            src={spriteUrl}
+                            alt={pet.name}
+                            className="pet-sprite"
+                            data-reaction={interactions.reaction}
+                        />
+
+                        {(monologue.text || monologue.thinking) && (
+                            <div className="speech-bubble">
+                                {monologue.thinking ? "Processing..." : monologue.text}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </main>
+
+            {/* floating dock */}
+            <nav className="pixel-dock">
+                <button onClick={() => handleInteract("feed")} disabled={isBusy} className="dock-icon" title="Feed">FEED</button>
+                <button onClick={() => handleInteract("play")} disabled={isBusy} className="dock-icon" title="Play">PLAY</button>
+                <button onClick={() => handleInteract("sleep")} disabled={isBusy} className="dock-icon" title="Sleep">SLEEP</button>
+
+                <div className="dock-divider"></div>
+
+                <button onClick={monologue.speak} disabled={isBusy} className="dock-icon" title="Talk" style={{ background: "var(--accent-green)" }}>TALK</button>
+
+                <div className="dock-divider"></div>
+
+                <button onClick={onLogout} className="dock-icon" title="Log out" style={{ background: "var(--accent-red)" }}>EXIT</button>
+            </nav>
+
+            {/* notice */}
+            {notice && (
+                <div className="retro-window" style={{ bottom: "100px", left: "50%", transform: "translateX(-50%)", zIndex: 999, width: "300px" }} onClick={() => setNotice("")}>
+                    <div className="window-header" style={{ background: "var(--accent-yellow)", fontSize: "10px" }}>
+                        <span>SYSTEM ALERT</span>
+                    </div>
+                    <div className="window-content" style={{ padding: "16px", fontWeight: "bold", fontSize: "20px", textAlign: "center" }}>
+                        {notice}
+                    </div>
                 </div>
             )}
-
-            {error && <p className="error">{error}</p>}
-
-            <h3>Recent activity</h3>
-            {activity.length === 0 && <p className="muted">Nothing yet.</p>}
-            <ul>
-                {activity.map(a => (
-                    <li key={a.id}>
-                        {a.description}{" "}
-                        <span className="muted">
-                            — {new Date(a.occurredAt).toLocaleString()}
-                        </span>
-                    </li>
-                ))}
-            </ul>
-
-            <Button variant="link" onClick={onLogout}>Log out</Button>
-        </section>
+        </div>
     )
 }
