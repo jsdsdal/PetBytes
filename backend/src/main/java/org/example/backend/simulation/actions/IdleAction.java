@@ -17,7 +17,7 @@ public class IdleAction implements PetAction {
     }
 
     @Override
-    public void execute(Pet pet, PetActionLogService actions) {
+    public void execute(Pet pet, PetActionLogService actions, boolean player) {
         // tom med vilje - skal bare glo ud i luften
     }
 }

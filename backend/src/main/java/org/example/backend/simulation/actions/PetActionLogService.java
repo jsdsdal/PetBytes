@@ -18,11 +18,11 @@ public class PetActionLogService {
         this.clock = clock;
     }
 
-    @Transactional public void feed(Pet pet, int amount)  { pet.feed(amount);  log(pet, ActivityType.FED, amount); }
-    @Transactional public void play(Pet pet, int amount)  { pet.play(amount);  log(pet, ActivityType.PLAYED, amount); }
-    @Transactional public void sleep(Pet pet, int amount) { pet.sleep(amount); log(pet, ActivityType.NAPPED, amount); }
+    @Transactional public void feed(Pet pet, int amount, boolean player)  { pet.feed(amount);  log(pet, ActivityType.FED, amount, player); }
+    @Transactional public void play(Pet pet, int amount, boolean player)  { pet.play(amount);  log(pet, ActivityType.PLAYED, amount, player); }
+    @Transactional public void sleep(Pet pet, int amount, boolean player) { pet.sleep(amount); log(pet, ActivityType.NAPPED, amount, player); }
 
-    private void log(Pet pet, ActivityType type, int amount) {
-        logs.save(new ActivityLog(pet, type, amount, clock.instant()));
+    private void log(Pet pet, ActivityType type, int amount, boolean player) {
+        logs.save(new ActivityLog(pet, type, amount, clock.instant(), player));
     }
 }

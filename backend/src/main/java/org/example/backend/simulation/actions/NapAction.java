@@ -18,5 +18,5 @@ public class NapAction implements PetAction {
     }
 
     @Override
-    public void execute(Pet pet, PetActionLogService actions) { actions.sleep(pet, SLEEP_AMOUNT); }
+    public void execute(Pet pet, PetActionLogService actions, boolean player) { actions.sleep(pet, SLEEP_AMOUNT, player); }
 }

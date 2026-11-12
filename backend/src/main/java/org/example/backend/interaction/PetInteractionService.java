@@ -32,21 +32,21 @@ public class PetInteractionService {
     @Transactional
     public PetResponse feed(Long petId, User user, int amount) {
         Pet pet = state.getOwnedActive(petId, user);
-        actions.feed(pet, amount);
+        actions.feed(pet, amount, true);
         return PetResponse.from(pet);
     }
 
     @Transactional
     public PetResponse play(Long petId, User user, int amount) {
         Pet pet = state.getOwnedActive(petId, user);
-        actions.play(pet, amount);
+        actions.play(pet, amount, true);
         return PetResponse.from(pet);
     }
 
     @Transactional
     public PetResponse sleep(Long petId, User user, int amount) {
         Pet pet = state.getOwnedActive(petId, user);
-        actions.sleep(pet, amount);
+        actions.sleep(pet, amount, true);
         return PetResponse.from(pet);
     }
 }

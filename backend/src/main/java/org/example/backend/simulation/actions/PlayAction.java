@@ -18,5 +18,5 @@ public class PlayAction implements PetAction {
     }
 
     @Override
-    public void execute(Pet pet, PetActionLogService actions) { actions.play(pet, PLAY_AMOUNT); }
+    public void execute(Pet pet, PetActionLogService actions, boolean player) { actions.play(pet, PLAY_AMOUNT, player); }
 }

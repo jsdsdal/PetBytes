@@ -37,7 +37,7 @@ public class AutonomousBehaviorService {
                 pet.getStats().getHungerLevel(),
                 pet.getStats().getEnergyLevel(),
                 pet.getStats().getHappinessLevel());
-        best.execute(pet, actions);
+        best.execute(pet, actions, false);
         return best;
     }
 }

@@ -77,7 +77,7 @@ public class AdoptionService {
         offer.accept(clock.instant());
         Pet pet = pets.save(Pet.adopt(name.strip(), offer.getSpecies(), offer.getPersonality(),
                 offer.isVariant(), user, clock.instant()));
-        logs.save(new ActivityLog(pet, ActivityType.ADOPTED, null, clock.instant()));
+        logs.save(new ActivityLog(pet, ActivityType.ADOPTED, null, clock.instant(), true));
         return PetResponse.from(pet);
     }
 

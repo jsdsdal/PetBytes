@@ -17,5 +17,8 @@ public class EatAction implements PetAction {
     }
 
     @Override
-    public void execute(Pet pet, PetActionLogService actions) { actions.feed(pet, FEED_AMOUNT); }
+    public void execute(Pet pet, PetActionLogService actions, boolean player) {
+        actions.feed(pet, FEED_AMOUNT, player);
+    }
+
 }

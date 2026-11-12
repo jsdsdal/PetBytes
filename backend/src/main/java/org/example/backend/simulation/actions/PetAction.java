@@ -8,5 +8,8 @@ import org.example.backend.pet.entity.Pet;
 
 public interface PetAction {
     String name();
+
     double score(Pet pet, PersonalityProfile profile);
-    void execute(Pet pet, PetActionLogService actions);}
+
+    void execute(Pet pet, PetActionLogService actions, boolean player);
+}

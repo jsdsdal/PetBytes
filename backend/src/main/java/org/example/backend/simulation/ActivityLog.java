@@ -34,14 +34,17 @@ public class ActivityLog {
     @Column(nullable = false)
     private ActivityType type;
 
+    @Column(nullable = false)
+    private boolean playerInitiated;
+
     private Integer amount;   // optional idk
 
-
-    public ActivityLog(Pet pet, ActivityType type, Integer amount, Instant occurredAt) {
+    public ActivityLog(Pet pet, ActivityType type, Integer amount, Instant occurredAt, boolean playerInitiated) {
         this.pet = pet;
         this.type = type;
         this.amount = amount;
         this.occurredAt = occurredAt;
+        this.playerInitiated = playerInitiated;
     }
 
     public ActivityLog() {
@@ -53,6 +56,7 @@ public class ActivityLog {
     public Pet getPet() { return pet; }
     public Instant getOccurredAt() { return occurredAt; }
     public ActivityType getType() { return type; }
+    public boolean isPlayerInitiated() { return playerInitiated; }
     public Integer getAmount() { return amount; }
 
 }
