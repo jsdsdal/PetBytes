@@ -56,6 +56,7 @@ public class AiPetDialogueService {
         return new AiDialogueContext(
                 pet.getName(),
                 pet.getSpecies(),
+                pet.getPersonality(),
                 profile.dialogueVerbosity(),
                 profile.dialogueStyle(),
                 pet.getStats().getHungerLevel(),

@@ -1,22 +1,44 @@
 import './App.css'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import QuizPage from "@/pages/QuizPage.jsx";
 import LoginPage from "@/pages/LoginPage.jsx";
 import RegisterPage from "@/pages/RegisterPage.jsx";
-import {login, logout, register} from "@/api/userApi.js";
-import {Button} from "@/components/ui/pixelact-ui/button.tsx";
+import AdoptionPage from "@/pages/AdoptionPage.jsx";
+import GamePage from "@/pages/GamePage.jsx";
+import { login, logout, register } from "@/api/userApi.js";
 import { getMyPets } from './api/petApi'
-import StatBar from "@/components/StatBar.jsx";
 
 function App() {
-    const [screen, setScreen] = useState(sessionStorage.getItem('token') ? 'game' : 'login')
+    const [screen, setScreen] = useState('loading')                // CHANGED: was a ternary
     const [user, setUser] = useState(sessionStorage.getItem('username'))
     const [newUser, setNewUser] = useState(null)
     const [registerError, setRegisterError] = useState("")
 
-    function handleLogin(username) {
+    // kører ved start / reload
+    useEffect(() => {
+        if (!sessionStorage.getItem('token')) {
+            setScreen('login')
+            return
+        }
+        resolveLandingScreen().then(setScreen)
+    }, [])
+
+    // hjælper
+    async function resolveLandingScreen() {
+        try {
+            const pets = await getMyPets()
+            return pets.length > 0 ? 'game' : 'adoption'
+        } catch {
+            // token stale/invalid → start fresh
+            logout()
+            return 'login'
+        }
+    }
+
+    // async, router afhængigt om de skal have et pet
+    async function handleLogin(username) {
         setUser(username)
-        setScreen("game")
+        setScreen(await resolveLandingScreen())
     }
 
     function handleLogout() {
@@ -31,34 +53,47 @@ function App() {
         setScreen('quiz')
     }
 
+    // går direkte til adoption nu
     async function handleQuizFinished(personality) {
         try {
             await register(newUser.username, newUser.email, newUser.password, personality)
             await login(newUser.username, newUser.password)
-            handleLogin(newUser.username)
-        }catch (err) {
+            setUser(newUser.username)
+            setScreen('adoption')
+        } catch (err) {
             setRegisterError(err.message)
             setScreen("register")
         }
     }
 
-  return (
-      <main className="page">
-        <h1>PetBytes</h1>
-          {/* Kun ÉN af disse linjer er sand ad gangen, så kun én side vises.
-          && betyder "vis kun hvis det til venstre er sandt". */}
+    return (
+        <main className="page">
+            <h1>PetBytes</h1>
 
-          {screen === 'login' && (
-              <LoginPage onLogin={handleLogin} onSignUp={() => setScreen("register")} />
-          )}
+            {/*loading*/}
+            {screen === 'loading' && <p>Loading...</p>}
 
-          {screen === "register" && (
-              <RegisterPage onContinue={handleRegisterContinue} onBack={() => setScreen("login")} error={registerError}
-          />
-          )}
+            {/* loginskærm */}
+            {screen === 'login' && (
+                <LoginPage onLogin={handleLogin} onSignUp={() => setScreen("register")} />
+            )}
 
-          {screen === 'quiz' && <QuizPage onFinish={handleQuizFinished} />}
+            {/* registrer */}
+            {screen === "register" && (
+                <RegisterPage
+                    onContinue={handleRegisterContinue}
+                    onBack={() => setScreen("login")}
+                    error={registerError}
+                />
+            )}
 
+            {/* quizflow */}
+            {screen === 'quiz' && <QuizPage onFinish={handleQuizFinished} />}
+
+            {/* adoption */}
+            {screen === "adoption" && (
+                <AdoptionPage onAdopted={() => setScreen("game")} />
+            )}
 
           {/* Spillet laver vi i næste trin. Indtil da en velkomst. */}
           {screen === 'game' && (
