@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: petbytes-db
+    restart: always
+    environment:
+      MYSQL_DATABASE: petbytes
+      MYSQL_USER: ${PETBYTES_ADMIN}
+      MYSQL_PASSWORD: ${PETBYTES_PW}
+      MYSQL_ROOT_PASSWORD: ${PETBYTES_ROOT_PW}
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - petbytes-network
+
+  backend:
+    image: ghcr.io/jsdsdal/petbytes-backend:latest
+    container_name: petbytes-backend
+    restart: always
+    depends_on:
+      - db
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/petbytes
+      - SPRING_DATASOURCE_USERNAME=${PETBYTES_ADMIN}
+      - SPRING_DATASOURCE_PASSWORD=${PETBYTES_PW}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+    networks:
+      - petbytes-network
+
+  frontend:
+    image: ghcr.io/jsdsdal/petbytes-frontend:latest
+    container_name: petbytes-frontend
+    restart: always
+    ports:
+      - "80:80" # Maps VM port 80 to container port 80
+    depends_on:
+      - backend
+    networks:
+      - petbytes-network
+
+networks:
+  petbytes-network:
+    driver: bridge
+
+volumes:
+  db_data:

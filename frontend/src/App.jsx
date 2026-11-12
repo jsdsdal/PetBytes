@@ -1,122 +1,123 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
 import './App.css'
+import { useCallback, useEffect, useState } from 'react'
+import QuizPage from "@/pages/QuizPage.jsx"
+import LoginPage from "@/pages/LoginPage.jsx"
+import RegisterPage from "@/pages/RegisterPage.jsx"
+import AdoptionPage from "@/pages/AdoptionPage.jsx"
+import GamePage from "@/pages/GamePage.jsx"
+import { Button } from "@/components/ui/pixelact-ui/button"
+import { login, logout, register } from "@/api/userApi.js"
+import { getMyPets } from "@/api/petApi.js"
+import { UNAUTHORIZED_EVENT } from "@/api/apiFetch.js"
+
+// Game needs a pet that is ACTIVE. Having only shelved pets means: go adopt.
+async function landingScreen() {
+    try {
+        const pets = await getMyPets()
+        return pets.some((p) => p.status === 'ACTIVE') ? 'game' : 'adoption'
+    } catch (err) {
+        return err.status === 401 ? 'login' : 'offline'   // a 500 shouldn't log you out
+    }
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+    const [screen, setScreen] = useState('loading')
+    const [user, setUser] = useState(sessionStorage.getItem('username'))
+    const [draft, setDraft] = useState(null)               // register form values
+    const [personality, setPersonality] = useState(null)   // quiz result, kept if signup fails
+    const [registerError, setRegisterError] = useState("")
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    useEffect(() => {
+        const onExpired = () => { setUser(null); setScreen('login') }
+        window.addEventListener(UNAUTHORIZED_EVENT, onExpired)
+        return () => window.removeEventListener(UNAUTHORIZED_EVENT, onExpired)
+    }, [])
 
-      <div className="ticks"></div>
+    useEffect(() => {
+        if (!sessionStorage.getItem('token')) {
+            setScreen('login')
+            return
+        }
+        landingScreen().then(setScreen)
+    }, [])
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+    async function handleLogin(username) {
+        setUser(username)
+        setScreen(await landingScreen())
+    }
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+    function handleLogout() {
+        logout()
+        setUser(null)
+        setScreen('login')
+    }
+
+    function handleRegisterContinue(formData) {
+        setDraft(formData)
+        setRegisterError('')
+        if (personality) createAccount(formData, personality)   // already took the quiz
+        else setScreen('quiz')
+    }
+
+    function handleQuizFinished(result) {
+        setPersonality(result)
+        createAccount(draft, result)
+    }
+
+    async function createAccount(account, chosenPersonality) {
+        try {
+            await register(account.username, account.email, account.password, chosenPersonality)
+        } catch (err) {
+            setRegisterError(err.message)
+            setScreen('register')
+            return
+        }
+        try {
+            await login(account.username, account.password)
+            setUser(account.username)
+            setScreen('adoption')
+        } catch {
+            setScreen('login')   // account exists now; don't try to register it twice
+        }
+    }
+
+    const goToAdoption = useCallback(() => setScreen('adoption'), [])
+
+    if (screen === 'game') {
+        return <GamePage user={user} onLogout={handleLogout} onNoPet={goToAdoption} />
+    }
+
+    return (
+        <main className="page">
+            <h1>PetBytes</h1>
+
+            {screen === 'loading' && <p>Loading...</p>}
+
+            {screen === 'offline' && (
+                <section className="pixel-box">
+                    <p>Can't reach the server.</p>
+                    <Button onClick={() => landingScreen().then(setScreen)}>Try again</Button>
+                </section>
+            )}
+
+            {screen === 'login' && (
+                <LoginPage onLogin={handleLogin} onSignUp={() => setScreen('register')} />
+            )}
+
+            {screen === 'register' && (
+                <RegisterPage
+                    initial={draft}
+                    onContinue={handleRegisterContinue}
+                    onBack={() => setScreen('login')}
+                    error={registerError}
+                />
+            )}
+
+            {screen === 'quiz' && <QuizPage onFinish={handleQuizFinished} />}
+
+            {screen === 'adoption' && <AdoptionPage onAdopted={() => setScreen('game')} />}
+        </main>
+    )
 }
 
 export default App
