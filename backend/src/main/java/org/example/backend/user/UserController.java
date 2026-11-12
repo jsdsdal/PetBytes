@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -41,17 +43,12 @@ public class UserController {
     }
 
     @PostMapping("/dologin")
-    public ResponseEntity<String> doLogin(@RequestBody LoginRequest request) {
-        try{
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(request.username(), request.password()));
-
-            return ResponseEntity.ok("Nice! You remembered your password");
-
-        } catch (IllegalArgumentException e) {
-
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Womp Womp...Wrong password dude");
+    public ResponseEntity<String> doLogin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null && auth.isAuthenticated()) {
+            return ResponseEntity.ok("Login OK");
         }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated");
     }
 
 }
