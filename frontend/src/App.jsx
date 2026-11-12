@@ -6,6 +6,7 @@ import RegisterPage from "@/pages/RegisterPage.jsx";
 import {login, logout, register} from "@/api/userApi.js";
 import {Button} from "@/components/ui/pixelact-ui/button.tsx";
 import { getMyPets } from './api/petApi'
+import AdoptionPage from "@/pages/AdoptionPage.jsx"
 
 function App() {
     const [screen, setScreen] = useState(sessionStorage.getItem('token') ? 'game' : 'login')
@@ -58,6 +59,9 @@ function App() {
 
           {screen === 'quiz' && <QuizPage onFinish={handleQuizFinished} />}
 
+          {screen === "adoption" && (
+              <AdoptionPage onAdopted={() => setScreen("game")} />
+          )}
 
           {/* Spillet laver vi i næste trin. Indtil da en velkomst. */}
           {screen === 'game' && (
