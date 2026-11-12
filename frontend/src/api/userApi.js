@@ -9,10 +9,12 @@ export async function login(username, password) {
         throw new Error("Wrong username or password")
     }
 
-    const token = response.headers.get("Authorization")
 
+    const token = response.headers.get("Authorization")
+    if (!token) throw new Error("Login failed. Please try again.")
     sessionStorage.setItem("token", token)
     sessionStorage.setItem("username", username)
+
 }
 
 export function logout() {
