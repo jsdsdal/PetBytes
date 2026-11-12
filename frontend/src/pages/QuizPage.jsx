@@ -4,7 +4,7 @@ import {PERSONALITIES, QUIZ_QUESTIONS} from "@/data/quizQuestions.js";
 
 const START_SCORES = { ANALYTICAL: 0, CAREGIVER: 0, SPONTANEOUS: 0, METICULOUS: 0}
 
-function QuizPage() {
+function QuizPage({ onFinish }) {
     const [currentIndex, setCurrentIndex] = useState(0)
     const [scores, setScores] = useState(START_SCORES)
 
@@ -34,6 +34,7 @@ function QuizPage() {
                 <section className="pixel-box">
                     <h2>You are {result.name}!</h2>
                     <p>{result.description}</p>
+                    <Button onClick={() => onFinish(winner)}>Continue</Button>
                 </section>
             )
         }

@@ -1,6 +1,7 @@
 package org.example.backend.config;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.example.backend.auth.JWTTokenGeneratorFilter;
 import org.example.backend.auth.JWTTokenValidatorFilter;
 import org.springframework.context.annotation.Bean;
@@ -47,8 +48,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/api/pets/**").authenticated()
                         .requestMatchers("/api/user").authenticated()
-                        .requestMatchers("/api/register", "/error","/api/dologin").permitAll())
-                .httpBasic(Customizer.withDefaults());
+                        .requestMatchers("/api/register","/api/dologin", "/error").permitAll()
+                        .requestMatchers("/api/adoption/**").authenticated())
+                .httpBasic(basic -> basic.authenticationEntryPoint(
+                        (request, response, authException) -> response.sendError(HttpServletResponse.SC_UNAUTHORIZED)));
         return http.build();
     }
 

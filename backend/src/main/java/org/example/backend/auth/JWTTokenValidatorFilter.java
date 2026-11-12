@@ -49,6 +49,7 @@ public class JWTTokenValidatorFilter extends OncePerRequestFilter {
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().equals("/api/dologin");
+        String path = request.getServletPath();
+        return path.equals("/api/dologin") || path.equals("/api/register");
     }
 }

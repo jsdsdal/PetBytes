@@ -42,3 +42,26 @@ p  { font-size: 12px; }
     font-size: 10px;
     color: #666;
 }
+
+.error {
+    font-size: 10px;
+    color: #dc2626;
+}
+
+.stack input {
+    box-sizing: border-box;
+    width: calc(100% - 8px);
+}
+
+fieldset {
+    border: none;
+    padding: 0;
+    margin: 0;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+}
