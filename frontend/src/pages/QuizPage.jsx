@@ -10,13 +10,9 @@ function QuizPage({ onFinish }) {
 
 
     function findWinner(scores) {
-        let winner = 'ANALYTICAL'
-        for (const personality in scores) {
-            if (scores[personality] > scores[winner]) {
-                winner = personality
-            }
-        }
-        return winner
+        const best = Math.max(...Object.values(scores))
+        const tied = Object.keys(scores).filter((p) => scores[p] === best)
+        return tied[Math.floor(Math.random() * tied.length)]
     }
 
     function handleAnswer(answer) {
