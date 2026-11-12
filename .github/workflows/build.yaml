@@ -23,7 +23,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/petbytes-backend:latest
+          tags: ghcr.io/jsdsdal/petbytes-backend:latest
 
       # build og push Frontend
       - uses: docker/build-push-action@v6
@@ -31,4 +31,4 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/petbytes-frontend:latest
+          tags: ghcr.io/jsdsdal/petbytes-frontend:latest
