@@ -5,8 +5,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN chmod +x mvnw
-RUN ./mvnw -B clean package -DskipTests
+RUN mvn -B clean package -DskipTests
 
 # Runtime
 FROM eclipse-temurin:25-jre-alpine
