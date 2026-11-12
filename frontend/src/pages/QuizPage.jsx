@@ -48,7 +48,8 @@ function QuizPage({ onFinish }) {
 
             <div className="stack">
                 {question.answers.map((answer) => (
-                    <Button key={answer.text} onClick={() => handleAnswer(answer)}>
+                    <Button
+                        key={answer.text} onClick={() => handleAnswer(answer)}>
                         {answer.text}
                     </Button>
                 ))}

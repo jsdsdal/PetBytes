@@ -1,31 +1,41 @@
 export const QUIZ_QUESTIONS = [
     {
-        question: 'Question 1',
+        question: "What word best describes you?",
         answers: [
-            {text: 'Answers 1', personality:'ANALYTICAL'},
-            {text: 'Answers 2', personality:'CAREGIVER'},
-            {text: 'Answers 3', personality:'SPONTANEOUS'},
-            {text: 'Answers 4', personality:'METICULOUS'},
+            {text: "Curious", personality:'ANALYTICAL'},
+            {text: "Caring", personality:'CAREGIVER'},
+            {text: "Adventurous", personality:'SPONTANEOUS'},
+            {text: "Thorough", personality:'METICULOUS'},
         ],
     },
 
     {
-        question: 'You discover a ornate box 1',
+        question: "Your pet starts speaking, how would you react?",
         answers: [
-            {text: 'Answers 1', personality:'ANALYTICAL'},
-            {text: 'Answers 2', personality:'CAREGIVER'},
-            {text: 'Answers 3', personality:'SPONTANEOUS'},
-            {text: 'Answers 4', personality:'METICULOUS'},
+            {text: "Stay calm and try to figure out what's going on", personality:'ANALYTICAL'},
+            {text: "Sit down and listen to what it has to say", personality:'CAREGIVER'},
+            {text: "Scream, then immediately start chatting", personality:'SPONTANEOUS'},
+            {text: "Write down everything it says, word for word", personality:'METICULOUS'},
         ],
     },
 
     {
-        question: 'Question 1',
+        question: "What kind of instrument most pleases your ear?",
         answers: [
-            {text: 'Answers 1', personality:'ANALYTICAL'},
-            {text: 'Answers 2', personality:'CAREGIVER'},
-            {text: 'Answers 3', personality:'SPONTANEOUS'},
-            {text: 'Answers 4', personality:'METICULOUS'},
+            {text: 'The violin', personality:'ANALYTICAL'},
+            {text: 'The piano', personality:'CAREGIVER'},
+            {text: 'The trumpet', personality:'SPONTANEOUS'},
+            {text: 'The drums', personality:'METICULOUS'},
+        ],
+    },
+
+    {
+        question: "You enter an enchanted garden. What would you be most curious to examine first?",
+        answers: [
+            {text: 'The statue of an old wizard with a strangely twinkling eye', personality:'ANALYTICAL'},
+            {text: 'The fat red toadstools that appear to be talking to each other', personality:'CAREGIVER'},
+            {text: 'The bubbling pool, in the depths of which something luminous is swirling', personality:'SPONTANEOUS'},
+            {text: 'The silver leafed tree bearing golden apples', personality:'METICULOUS'},
         ],
     },
 ]

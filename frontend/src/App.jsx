@@ -6,6 +6,7 @@ import RegisterPage from "@/pages/RegisterPage.jsx";
 import {login, logout, register} from "@/api/userApi.js";
 import {Button} from "@/components/ui/pixelact-ui/button.tsx";
 import { getMyPets } from './api/petApi'
+import StatBar from "@/components/StatBar.jsx";
 
 function App() {
     const [screen, setScreen] = useState(sessionStorage.getItem('token') ? 'game' : 'login')
@@ -67,6 +68,10 @@ function App() {
                       {/* Henter dine dyr med tokenen og skriver dem i konsollen */}
                       <Button onClick={async () => console.log(await getMyPets())}>Test token</Button>
                       <Button variant="link" onClick={handleLogout}>Log out</Button>
+                      {/* MIDLERTIDIGT: test af StatBar med faste tal */}
+                      <StatBar label="Food" value={80} />
+                      <StatBar label="Happy" value={40} />
+                      <StatBar label="Energy" value={10} />
                   </div>
               </section>
           )}
