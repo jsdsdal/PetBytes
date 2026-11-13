@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.client.RestClient;
 
 import java.util.List;
 
@@ -20,16 +20,15 @@ import java.util.List;
 public class GeminiDialogueGenerator implements AiDialogueGenerator {
 
     private static final Logger log = LoggerFactory.getLogger(GeminiDialogueGenerator.class);
-
-    private final WebClient webClient;
+    private final RestClient restClient;
     private final AiDialoguePromptBuilder prompts;
     private final GeminiProperties props;
 
     public GeminiDialogueGenerator(
-            WebClient.Builder builder,
+            RestClient.Builder restClientBuilder,
             AiDialoguePromptBuilder prompts,
             GeminiProperties props) {
-        this.webClient = builder.baseUrl(props.baseUrl()).build();
+        this.restClient = restClientBuilder.baseUrl(props.baseUrl()).build();
         this.prompts = prompts;
         this.props = props;
     }
@@ -42,14 +41,13 @@ public class GeminiDialogueGenerator implements AiDialogueGenerator {
         );
 
         try {
-            GeminiResponse response = webClient.post()
+            GeminiResponse response = restClient.post()
                     .uri("/v1beta/models/{model}:generateContent?key={key}",
                             props.model(), props.apiKey())
                     .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(request)
+                    .body(request)
                     .retrieve()
-                    .bodyToMono(GeminiResponse.class)
-                    .block();
+                    .body(GeminiResponse.class);
 
             if (response != null && response.candidates() != null && !response.candidates().isEmpty()) {
                 var candidate = response.candidates().get(0);
@@ -58,10 +56,9 @@ public class GeminiDialogueGenerator implements AiDialogueGenerator {
                 }
             }
         } catch (Exception e) {
-            log.error("Failed to fetch dialogue from Gemini API", e);
+            log.error("Failed to fetch dialogue from Gemini API via RestClient", e);
         }
 
-        //fallback, så den ikke crasher
         return null;
     }
 }
