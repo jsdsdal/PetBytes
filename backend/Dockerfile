@@ -16,4 +16,8 @@ COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", \
+  "--sun-misc-unsafe-memory-access=allow", \
+  "--enable-native-access=ALL-UNNAMED", \
+  "-Dio.netty.tryReflectionSetAccessible=true", \
+  "-jar", "app.jar"]
