@@ -42,8 +42,8 @@ public class GeminiDialogueGenerator implements AiDialogueGenerator {
 
         try {
             GeminiResponse response = restClient.post()
-                    .uri("/v1beta/models/{model}:generateContent?key={key}",
-                            props.model(), props.apiKey())
+                    .uri("/v1beta/models/{model}:generateContent", props.model())
+                    .header("X-goog-api-key", props.apiKey())
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(request)
                     .retrieve()
