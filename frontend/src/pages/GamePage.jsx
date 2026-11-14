@@ -4,6 +4,7 @@ import { useActivity } from "@/hooks/useActivity.js"
 import { useInteractions } from "@/hooks/useInteractions.js"
 import { useMonologue } from "@/hooks/useMonologue.js"
 import StatBar from "@/components/pet/StatBar.jsx"
+import CollectionWindow from "@/components/collection/CollectionWindow.jsx"
 
 export default function GamePage({ user, onLogout, onNoPet }) {
     const { pet, status, error, version, apply, retry } = usePet()
@@ -12,6 +13,7 @@ export default function GamePage({ user, onLogout, onNoPet }) {
     const activity = useActivity(pet?.id, version, 10)
     const interactions = useInteractions(pet?.id, { onUpdated: apply, onError: setNotice })
     const monologue = useMonologue(pet?.id, { onError: setNotice })
+    const [showCollection, setShowCollection] = useState(false)
 
 //snakker hver 45 s
     useEffect(() => {
@@ -58,9 +60,9 @@ export default function GamePage({ user, onLogout, onNoPet }) {
                     <div className="desk-icon-img">📄</div>
                     <span>README</span>
                 </div>
-                <div className="desk-icon">
+                <div className="desk-icon" onClick={() => setShowCollection((open) => !open)}>
                     <div className="desk-icon-img">📁</div>
-                    <span>ARCHIVE</span>
+                    <span>COLLECTION</span>
                 </div>
                 <div className="desk-icon">
                     <div className="desk-icon-img">🗑️</div>
@@ -120,6 +122,9 @@ export default function GamePage({ user, onLogout, onNoPet }) {
                     </div>
                 </div>
             </main>
+
+            {/* collection */}
+            {showCollection && <CollectionWindow onClose={() => setShowCollection(false)} />}
 
             {/* floating dock */}
             <nav className="pixel-dock">
