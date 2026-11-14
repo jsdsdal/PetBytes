@@ -20,12 +20,20 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mysql://db:3306/petbytes
-      - SPRING_DATASOURCE_USERNAME=${PETBYTES_ADMIN}
-      - SPRING_DATASOURCE_PASSWORD=${PETBYTES_PW}
-      - GROQ_API_KEY=${GROQ_API_KEY}
-      - llm.base-url=https://api.groq.com/openai/v1
-      - llm.model=openai/gpt-oss-120b
+      JDK_JAVA_OPTIONS: >-
+        -XX:+UnlockDiagnosticVMOptions
+        -XX:-UseIntPolyIntrinsics
+        -XX:UseAVX=0
+        -XX:TieredStopAtLevel=1
+        -XX:ErrorFile=/tmp/hs_err_pid%p.log
+
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/petbytes
+      SPRING_DATASOURCE_USERNAME: ${PETBYTES_ADMIN}
+      SPRING_DATASOURCE_PASSWORD: ${PETBYTES_PW}
+      GROQ_API_KEY: ${GROQ_API_KEY}
+      "llm.base-url": https://api.groq.com/openai/v1
+      "llm.model": openai/gpt-oss-120b
+
     networks:
       - petbytes-network
 
@@ -34,7 +42,7 @@ services:
     container_name: petbytes-frontend
     restart: always
     ports:
-      - "80:80" # Maps VM port 80 to container port 80
+      - "80:80"
     depends_on:
       - backend
     networks:
