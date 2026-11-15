@@ -24,16 +24,13 @@ export default function GamePage({ user, onLogout, onNoPet }) {
 //snakker hver 45 s
     useEffect(() => {
         if (status !== "ready") return
-
         const interval = setInterval(() => {
-            // snakker kun hvis den ikke laver andet
             if (!monologue.thinking && !interactions.busy) {
                 monologue.speak()
             }
-        }, 45000) // 45 seconds
-
+        }, 45000)
         return () => clearInterval(interval)
-    }, [status, monologue, interactions.busy])
+    }, [status, monologue.thinking, interactions.busy])
 
     // intet aktivt pet -> til adoption
     useEffect(() => {
