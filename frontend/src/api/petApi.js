@@ -7,3 +7,7 @@ export const getMonologue = (id) => apiFetch(`/api/pets/${id}/monologue`)
 
 // action: "feed" | "play" | "sleep"
 export const interact = (id, action) => apiFetch(`/api/pets/${id}/${action}`, { method: "POST" })
+
+// daycare
+export const shelvePet = (id) => apiFetch(`/api/pets/${id}/shelve`, { method: "POST" })
+export const activatePet = (id) => apiFetch(`/api/pets/${id}/activate`, { method: "POST" })

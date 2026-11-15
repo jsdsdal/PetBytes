@@ -84,7 +84,12 @@ function App() {
     const goToAdoption = useCallback(() => setScreen('adoption'), [])
 
     if (screen === 'game') {
-        return <GamePage user={user} onLogout={handleLogout} onNoPet={goToAdoption} />
+        return <GamePage
+            user={user}
+            onLogout={handleLogout}
+            onNoPet={goToAdoption}
+        />
+
     }
 
     return (
@@ -116,6 +121,7 @@ function App() {
             {screen === 'quiz' && <QuizPage onFinish={handleQuizFinished} />}
 
             {screen === 'adoption' && <AdoptionPage onAdopted={() => setScreen('game')} />}
+
         </main>
     )
 }
