@@ -10,7 +10,7 @@ export default function DaycareList({buttonLabel, onPick, busy}) {
     useEffect(() => {
         getMyPets()
             .then((all) => setPets(all.filter((p) => p.status === "INACTIVE")))
-            .then((err) => setError(err.message))
+            .catch((err) => setError(err.message))
     },[])
 
     if (error) return <p>{error}</p>
