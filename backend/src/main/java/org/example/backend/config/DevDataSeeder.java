@@ -3,6 +3,7 @@ package org.example.backend.config;
 import org.example.backend.adoption.AdoptionOffer;
 import org.example.backend.adoption.AdoptionService;
 import org.example.backend.adoption.dto.AdoptionOfferResponse;
+import org.example.backend.adoption.dto.AdoptionOffersResponse;
 import org.example.backend.personality.user.UserPersonality;
 import org.example.backend.pet.PetRepository;
 import org.example.backend.user.User;
@@ -39,7 +40,7 @@ public class DevDataSeeder implements CommandLineRunner {
                 passwordEncoder.encode("dev"),
                 UserPersonality.ANALYTICAL));
 
-        AdoptionOfferResponse offer = adoptionService.currentOffer(dev);
-        adoptionService.accept(dev, offer.id(), "Mochi");
+        AdoptionOffersResponse batch = adoptionService.currentBatch(dev);
+        adoptionService.accept(dev, batch.offers().get(0).id(), "Mochi");
     }
 }

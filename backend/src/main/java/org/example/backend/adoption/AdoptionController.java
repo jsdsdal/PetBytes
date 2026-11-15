@@ -3,6 +3,7 @@ package org.example.backend.adoption;
 import jakarta.validation.Valid;
 import org.example.backend.adoption.dto.AcceptOfferRequest;
 import org.example.backend.adoption.dto.AdoptionOfferResponse;
+import org.example.backend.adoption.dto.AdoptionOffersResponse;
 import org.example.backend.pet.dto.PetResponse;
 import org.example.backend.user.CurrentUser;
 import org.springframework.http.HttpStatus;
@@ -22,14 +23,14 @@ public class AdoptionController {
         this.currentUser = currentUser;
     }
 
-    @GetMapping("/offers/current")
-    public AdoptionOfferResponse current(Principal principal) {
-        return adoption.currentOffer(currentUser.from(principal));
+    @GetMapping("/offers")
+    public AdoptionOffersResponse current(Principal principal) {
+        return adoption.currentBatch(currentUser.from(principal));
     }
 
-    @PostMapping("/offers/{offerId}/decline")
-    public AdoptionOfferResponse decline(@PathVariable Long offerId, Principal principal) {
-        return adoption.decline(currentUser.from(principal), offerId);
+    @PostMapping("/offers/reroll")
+    public AdoptionOffersResponse reroll(Principal principal) {
+        return adoption.reroll(currentUser.from(principal));
     }
 
     @PostMapping("/offers/{offerId}/accept")
