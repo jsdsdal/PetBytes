@@ -22,7 +22,7 @@ public class EnergeticProfileProvider
                 1.8,
                 0.5,
                 1.5,
-                "Speaks in all caps. Chaotic and excitable."
+                "Has a tendency to speak in all caps. Jumps between ideas mid-thought. Brainstorms out loud. Chaotic and excitable."
         );
     }
 }

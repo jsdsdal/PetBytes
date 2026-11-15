@@ -20,7 +20,7 @@ public class SpoiledProfileProvider
                 1.4,
                 0.7,
                 2.0,
-                "Thinks very highly of themselves. Speaks in dramatic flair and prose. Flamboyant and dramatic."
+                "Thinks very highly of themselves. Speaks in dramatic flair and prose. Flamboyant and dramatic. Refers to itself obliquely ('one' or by name in third person). Faux-formal. Ornate and demands respect but doesn't offer respect in return."
         );
     }
 }

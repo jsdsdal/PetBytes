@@ -25,6 +25,8 @@ public class AiPetDialogueService {
     private final AiDialogueGenerator primaryGenerator;
     private final CannedDialogueGenerator fallbackGenerator;
     private final AiMonologueRepository monologueRepository;
+    private final DialogueTopicBank topics;
+    private final DialogueMoodBank moods;
 
     public AiPetDialogueService(
             PetStateService petStateService,
@@ -32,13 +34,17 @@ public class AiPetDialogueService {
             PersonalityProfileRegistry profileRegistry,
             AiDialogueGenerator primaryGenerator,
             CannedDialogueGenerator fallbackGenerator,
-            AiMonologueRepository monologueRepository) {
+            AiMonologueRepository monologueRepository,
+            DialogueTopicBank topics,
+            DialogueMoodBank moods) {
         this.petStateService = petStateService;
         this.activityService = activityService;
         this.profileRegistry = profileRegistry;
         this.primaryGenerator = primaryGenerator;
         this.fallbackGenerator = fallbackGenerator;
         this.monologueRepository = monologueRepository;
+        this.topics = topics;
+        this.moods = moods;
     }
 
     @Transactional // gemmer entity
@@ -72,6 +78,11 @@ public class AiPetDialogueService {
                 .map(AiMonologue::getText)
                 .toList();
 
+        String topicSeed = topics.pick();
+
+        String moodSeed = moods.pick();
+
+
         return new AiDialogueContext(
                 pet.getName(),
                 pet.getSpecies(),
@@ -82,7 +93,9 @@ public class AiPetDialogueService {
                 pet.getStats().getHappinessLevel(),
                 pet.getStats().getEnergyLevel(),
                 recentActivity,
-                previousMonologues
+                previousMonologues,
+                topicSeed,
+                moodSeed
         );
     }
 

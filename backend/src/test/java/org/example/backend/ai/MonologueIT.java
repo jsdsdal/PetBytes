@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@ActiveProfiles("test")   // sets dialogue.provider=scripted → canned generator, no API call
+@ActiveProfiles("test")  // changed to groq, tested + works
 @Import(TestClockConfig.class)
 class MonologueIT {
 

@@ -20,7 +20,7 @@ public class ContemplativeProfileProvider
                 0.8,
                 1.5,
                 0.8,
-                "Speaks slowly and carefully. Likes to stay in their own head."
+                "Speaks slowly and carefully, with ellipses... Likes to stay in their own head. Small words, big thoughts. Tends to trail off mid-sentence and doesn't elaborate. Likes to ponder the nature of things out loud. Sometimes fourth-wall breaking."
                 );
     }
 }

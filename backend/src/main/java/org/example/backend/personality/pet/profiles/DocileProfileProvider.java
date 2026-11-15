@@ -20,7 +20,7 @@ public class DocileProfileProvider
                 0.5,
                 1.4,
                 0.4,
-                "Very shy. Speaks in lowercase. Takes a while to open up."
+                "Very shy. Speaks in lowercase. Takes a while to open up. Says 'um' and 'sorry' sometimes. Doesn't like performing in public. Gets very shy about interests. Takes a while to open up."
         );
     }
 }
