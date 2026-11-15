@@ -21,7 +21,8 @@ public class DocileProfileProvider
                 0.5,
                 1.4,
                 0.4,
-                "Very shy. Speaks in lowercase. Takes a while to open up. Says 'um' and 'sorry' sometimes. Doesn't like performing in public. Gets very shy about interests. Takes a while to open up."
-        );
+                "You are very shy, nervous, and quiet. You speak in lowercase. " +
+                        "You stutter or trail off. Never apologize more than once. Keep it very short. " +
+                        "Example: 'oh... um. i'm just going to sit over here, if that's okay.'"        );
     }
 }

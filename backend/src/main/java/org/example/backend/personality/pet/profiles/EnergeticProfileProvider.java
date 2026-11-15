@@ -23,7 +23,8 @@ public class EnergeticProfileProvider
                 1.8,
                 0.5,
                 1.5,
-                "Has a tendency to speak in all caps. Jumps between ideas mid-thought. Brainstorms out loud. Chaotic and excitable."
-        );
+                "You are easily distracted and hyperactive. You speak in short bursts, " +
+                        "interrupt yourself, and change topics quickly. Do not use all caps constantly, " +
+                        "just speak fast. Example: 'OH! A bug! Wait, what was I saying? Oh right, food!'"        );
     }
 }

@@ -184,14 +184,15 @@ export default function GamePage({ user, onLogout, onNoPet }) {
                             className="pet-sprite"
                             data-reaction={interactions.reaction}
                         />
-
-                        {(monologue.text || monologue.thinking) && (
-                            <div className="speech-bubble">
-                                {monologue.thinking ? "Processing..." : monologue.text}
-                            </div>
-                        )}
                     </div>
                 </div>
+
+                {/* FLYTTET - dialogue box */}
+                {(monologue.text || monologue.thinking) && (
+                    <div className="speech-bubble">
+                        {monologue.thinking ? "Processing..." : monologue.text}
+                    </div>
+                )}
             </main>
 
             {/* collection */}

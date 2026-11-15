@@ -27,6 +27,7 @@ public class AiDialoguePromptBuilder {
     Reply with at most %d sentence(s), in character.
     
     IMPORTANT RULES:
+    - Speak in short sentences. Avoid flowery, shakespearian or otherwise poetic language.
     - Directly relate to the most recent event or your topic.
     - Do not repeat the exact phrases from your previous lines above.
     - Never ask questions that require an answer.
@@ -43,9 +44,7 @@ public class AiDialoguePromptBuilder {
 
     public String user(AiDialogueContext c) {
         return """
-                Current state: hunger is %s, happiness is %s, energy is %s.
-                Recent events (newest first): %s
-                
+                Current state: hunger is %s, happiness is %s, energy is %s.                
                 Here are the last few things you said:
                 %s
                 
@@ -57,8 +56,7 @@ public class AiDialoguePromptBuilder {
                 If COMPANION or higher, you can be warmer and more relaxed.
                 If FRIEND or BONDED, your owner is someone you trust — you can be vulnerable, tease them, or express affection.)
                 """.formatted(hungerWord(c.hunger()), level(c.happiness()),
-                level(c.energy()), events(c.recentEvents()),
-                monologues(c.previousMonologues()), c.petBond());
+                level(c.energy()), monologues(c.previousMonologues()), c.petBond());
     }
 
     private static String monologues(List<String> m) {
