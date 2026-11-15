@@ -316,6 +316,21 @@ body::after {
     100% { transform: translateY(0px); }
 }
 
+/* pet panel */
+.pet-nameplate {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 4px solid var(--ink);
+    font-family: var(--font-header);
+}
+
+.pet-nameplate strong { font-size: 14px; }
+
+.pet-nameplate span { font-size: 8px; opacity: 0.7; }
+
 /* Speech Bubble */
 .speech-bubble {
     position: absolute;
@@ -492,3 +507,62 @@ progress.stat-bar.low::-webkit-progress-value { background: var(--accent-red); }
 
 /*variant*/
 .collection-card.is-variant { border-color: #e0b100; background: #fff8d6; }
+
+/* --- Confirm dialog --- */
+.dialog-backdrop {
+    position: fixed;
+    inset: 0;                         /* dækker hele skærmen */
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1000;                    /* over alt andet */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-window {
+    position: relative;
+    width: 380px;
+}
+
+.dialog-content { gap: 16px; text-align: center; }
+
+.dialog-buttons { display: flex; justify-content: center; gap: 16px; }
+
+/* --- window fan --- */
+.window-tabs {
+    display: flex;
+    border-bottom: 4px solid var(--ink);
+}
+
+.tab {
+    flex: 1;
+    padding: 8px;
+    font-family: var(--font-header);
+    font-size: 8px;
+    background: var(--win-bg);
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.tab + .tab { border-left: 4px solid var(--ink); }
+
+.tab.is-active { opacity: 1; background: var(--accent-yellow); }
+
+/* --- Daycare-list --- */
+.daycare-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.daycare-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border: 3px solid var(--ink);
+    background: #fff;
+}
+
+.daycare-row img { width: 48px; height: 48px; image-rendering: pixelated; }
+
+.daycare-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+
+.daycare-row .dock-icon { width: auto; height: auto; padding: 8px 12px; }

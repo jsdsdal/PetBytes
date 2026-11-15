@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/pixelact-ui/button"
 import { Input } from "@/components/ui/pixelact-ui/input"
 import { Label } from "@/components/ui/pixelact-ui/label"
 import { getCurrentOffer, declineOffer, acceptOffer } from "@/api/adoptionApi.js"
+import DaycareList from "@/components/collection/DaycareList.jsx";
+import { activatePet } from "@/api/petApi.js"
 
 export default function AdoptionPage({ onAdopted }) {
     const [offer, setOffer] = useState(null)
@@ -57,11 +59,24 @@ export default function AdoptionPage({ onAdopted }) {
         }
     }
 
+    async function handleBringBack(pet) {
+        if (submitting) return
+        setSubmitting(true)
+        try {
+            await activatePet(pet.id)
+            onAdopted()
+        } catch (err) {
+            setError(err.message)
+            setSubmitting(false)
+        }
+    }
+
     if (loading) return <p>Looking for a pet...</p>
     if (!offer) return <p className="error">{error || "No offer available."}</p>
     if (!offer) return <p>No offer available.</p>
 
     return (
+        <>
         <form className="pixel-box" onSubmit={handleAccept}>
             <h2>A pet is waiting for you</h2>
 
@@ -92,5 +107,11 @@ export default function AdoptionPage({ onAdopted }) {
                 Not this one — show me another
             </Button>
         </form>
+
+            <section className="pixel-box">
+                <h2>Or bring a pet back from daycare</h2>
+                <DaycareList buttonLabel="BRING BACK" onPick={handleBringBack} busy={submitting} />
+            </section>
+        </>
     )
 }

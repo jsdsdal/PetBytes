@@ -5,7 +5,7 @@ const SPECIES_ORDER = Object.keys(SPECIES)
 const PERSONALITY_ORDER = Object.keys(PERSONALITY_LABELS)
 
 //unikke pets
-export const formKey = (pet) => '${pet.species}-${pet.personality}-${pet.variant}'
+export const formKey = (pet) => `${pet.species}-${pet.personality}-${pet.variant}`
 
 export function dexNumber(species) {
     const index = SPECIES_ORDER.indexOf(species)
