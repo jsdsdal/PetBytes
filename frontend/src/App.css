@@ -503,6 +503,7 @@ progress.stat-bar.low::-webkit-progress-value { background: var(--accent-red); }
     width: 96px;
     height: 96px;
     image-rendering: pixelated;
+    animation: none !important;
 }
 
 .offer-card__species {
