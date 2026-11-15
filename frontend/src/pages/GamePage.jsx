@@ -106,7 +106,9 @@ export default function GamePage({ user, onLogout, onNoPet }) {
     }
 
     const spriteName = pet.species.toLowerCase()
-    const spriteUrl = `/sprites/${spriteName}.svg`
+    const spriteUrl = pet.variant
+        ? `/sprites/${spriteName}_variant.svg`
+        : `/sprites/${spriteName}.svg`
     const isBusy = interactions.busy || monologue.thinking
 
     return (
