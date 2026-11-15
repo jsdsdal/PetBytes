@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class IdleAction implements PetAction {
-    private static final double BASE_SCORE = 0.05;
+    private static final double BASE_SCORE = 0.25;
 
     @Override public String name() { return "idle"; }
 

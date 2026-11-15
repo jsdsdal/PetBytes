@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EatAction implements PetAction {
-    private static final int FEED_AMOUNT = 15;
+    private static final int PLAYER_FEED = 15;
+    private static final int SELF_FEED = 3;
 
     @Override public String name() { return "eat"; }
 
@@ -18,7 +19,7 @@ public class EatAction implements PetAction {
 
     @Override
     public void execute(Pet pet, PetActionLogService actions, boolean player) {
-        actions.feed(pet, FEED_AMOUNT, player);
+        actions.feed(pet, player ? PLAYER_FEED : SELF_FEED, player);
     }
 
 }
