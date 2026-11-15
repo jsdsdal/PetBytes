@@ -1,16 +1,12 @@
 import { apiFetch } from "./apiFetch.js"
 
-export function getCurrentOffer() {
-    return apiFetch("/api/adoption/offers/current")
-}
+export const getOffers = () => apiFetch("/api/adoption/offers")
 
-export function declineOffer(offerId) {
-    return apiFetch(`/api/adoption/offers/${offerId}/decline`, { method: "POST" })
-}
+export const rerollOffers = () =>
+    apiFetch("/api/adoption/offers/reroll", { method: "POST" })
 
-export function acceptOffer(offerId, name) {
-    return apiFetch(`/api/adoption/offers/${offerId}/accept`, {
+export const acceptOffer = (offerId, name) =>
+    apiFetch(`/api/adoption/offers/${offerId}/accept`, {
         method: "POST",
         body: JSON.stringify({ name }),
     })
-}
