@@ -1,6 +1,7 @@
 package org.example.backend.personality.pet;
 
 public record PersonalityProfile(
+        double selfCareTendency,
         double hungerRate,
         double energyDepletionRate,
         double playTendency,

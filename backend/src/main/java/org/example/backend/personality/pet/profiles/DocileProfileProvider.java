@@ -15,6 +15,7 @@ public class DocileProfileProvider
     @Override
     public PersonalityProfile profile() {
         return new PersonalityProfile(
+                1.0,
                 0.8,
                 1.2,
                 0.5,

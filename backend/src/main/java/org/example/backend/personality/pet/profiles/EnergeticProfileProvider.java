@@ -17,6 +17,7 @@ public class EnergeticProfileProvider
     @Override
     public PersonalityProfile profile() {
         return new PersonalityProfile(
+                0.7,
                 1.5,
                 0.6,
                 1.8,

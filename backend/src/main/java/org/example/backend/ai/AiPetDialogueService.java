@@ -95,7 +95,8 @@ public class AiPetDialogueService {
                 recentActivity,
                 previousMonologues,
                 topicSeed,
-                moodSeed
+                moodSeed,
+                pet.getPetBond()
         );
     }
 

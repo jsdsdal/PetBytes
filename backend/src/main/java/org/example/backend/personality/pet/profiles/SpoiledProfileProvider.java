@@ -15,6 +15,7 @@ public class SpoiledProfileProvider
     @Override
     public PersonalityProfile profile() {
         return new PersonalityProfile(
+                0.4, // virkelig dårlig til at passe sig selv, ville hellere blive forkælet
                 0.7,
                 1.0,
                 1.4,

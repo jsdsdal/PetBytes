@@ -37,6 +37,7 @@ public class AiDialoguePromptBuilder {
         
         Here's a topic for inspiration: %s
         Here's your current mood: %s
+        
         """.formatted(c.petName(), c.species().getDesignKey(), c.species().getDescription(),
                 c.dialogueStyle(), maxSentences(c.dialogueVerbosity()), c.moodSeed(), c.topicSeed());
     }
@@ -55,9 +56,14 @@ public class AiDialoguePromptBuilder {
                 
                 Say something to your owner. Do NOT repeat your previous lines. 
                 Keep it fresh based on what just happened.
+                
+                Here's your current relationship with the player: %s
+                (If your bond is STRANGER or ACQUAINTANCE, you are still guarded and observant.
+                If COMPANION or higher, you can be warmer and more relaxed.
+                If FRIEND or BONDED, your owner is someone you trust — you can be vulnerable, tease them, or express affection.)
                 """.formatted(hungerWord(c.hunger()), level(c.happiness()),
                 level(c.energy()), events(c.recentEvents()),
-                monologues(c.previousMonologues()));
+                monologues(c.previousMonologues()), c.petBond());
     }
 
     private static String monologues(List<String> m) {

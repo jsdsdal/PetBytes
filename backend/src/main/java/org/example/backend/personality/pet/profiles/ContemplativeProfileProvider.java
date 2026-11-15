@@ -15,6 +15,7 @@ public class ContemplativeProfileProvider
     @Override
     public PersonalityProfile profile() {
         return new PersonalityProfile(
+                1.5, // høj tendens til at værne om sig selv
                 0.8,
                 1.4,
                 0.8,
