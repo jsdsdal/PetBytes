@@ -78,7 +78,7 @@ function CollectionCard({ form }) {
             </span>
 
             <img
-                src={`/sprites/${form.species.toLowerCase()}.svg`}
+                src={`/sprites/${form.species.toLowerCase()}${form.variant ? "_variant" : ""}.svg`}
                 alt={species.label}
                 draggable={false}
             />

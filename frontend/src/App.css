@@ -462,6 +462,63 @@ progress.stat-bar.low::-webkit-progress-value { background: var(--accent-red); }
     margin: 0 4px;
 }
 
+/* adoption flow */
+
+.offer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.offer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+}
+
+.offer-card:hover:not(:disabled) {
+    border-color: var(--accent-muted, rgba(255,255,255,0.2));
+}
+
+.offer-card.is-selected {
+    border-color: var(--accent, #fff);
+    background: rgba(255,255,255,0.05);
+}
+
+.offer-card:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.offer-card .pet-sprite {
+    width: 96px;
+    height: 96px;
+    image-rendering: pixelated;
+}
+
+.offer-card__species {
+    font-weight: 600;
+}
+
+.offer-card__personality {
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.offer-card__variant {
+    font-size: 0.75rem;
+    color: gold;
+}
+
 /* --- Collection --- */
 
 .collection-window {
