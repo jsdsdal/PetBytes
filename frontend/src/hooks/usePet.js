@@ -18,6 +18,12 @@ export function usePet() {
         setVersion((v) => v + 1)
     }, [])
 
+    const switchTo = useCallback((next) => {
+        petId.current = next.id
+        apply(next)
+        setStatus("ready")
+    }, [apply])
+
     const load = useCallback(async () => {
         try {
             const fresh = petId.current ? await getPet(petId.current) : findActive(await getMyPets())
@@ -56,5 +62,5 @@ export function usePet() {
         load()
     }, [load])
 
-    return { pet, status, error, version, apply, retry }
+    return { pet, status, error, version, apply, retry, switchTo }
 }

@@ -15,12 +15,14 @@ public class DocileProfileProvider
     @Override
     public PersonalityProfile profile() {
         return new PersonalityProfile(
+                1.0,
                 0.8,
                 1.2,
                 0.5,
                 1.4,
                 0.4,
-                "Very shy. Speaks in lowercase. Takes a while to open up."
-        );
+                "You are very shy, nervous, and quiet. You speak in lowercase. " +
+                        "You stutter or trail off. Never apologize more than once. Keep it very short. " +
+                        "Example: 'oh... um. i'm just going to sit over here, if that's okay.'"        );
     }
 }

@@ -15,12 +15,14 @@ public class ContemplativeProfileProvider
     @Override
     public PersonalityProfile profile() {
         return new PersonalityProfile(
+                1.5, // høj tendens til at værne om sig selv
                 0.8,
                 1.4,
                 0.8,
                 1.5,
                 0.8,
-                "Speaks slowly and carefully. Likes to stay in their own head."
-                );
+                "You are quiet, calm, and slightly existential. You observe small details. " +
+                        "Never use poetic or flowery language. Speak simply. " +
+                        "Example: 'The dust in the sunbeam is floating again. I wonder if it gets tired.'"                );
     }
 }

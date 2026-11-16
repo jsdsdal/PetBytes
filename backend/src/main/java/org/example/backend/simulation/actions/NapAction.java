@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class NapAction implements PetAction {
-    private static final int SLEEP_AMOUNT = 20;
+    private static final int PLAYER_NAP = 20;
+    private static final int SELF_NAP   = 6;
 
     @Override public String name() { return "nap"; }
 
@@ -18,5 +19,5 @@ public class NapAction implements PetAction {
     }
 
     @Override
-    public void execute(Pet pet, PetActionLogService actions, boolean player) { actions.sleep(pet, SLEEP_AMOUNT, player); }
+    public void execute(Pet pet, PetActionLogService actions, boolean player) { actions.sleep(pet, player ? PLAYER_NAP : SELF_NAP, player); }
 }

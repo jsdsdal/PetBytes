@@ -19,24 +19,42 @@ public class AdoptionOffer {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @Enumerated(EnumType.STRING) @Column(nullable = false) private PetSpecies species;
-    @Enumerated(EnumType.STRING) @Column(nullable = false) private PetPersonality personality;
-    @Column(nullable = false) private boolean variant;
-    @Enumerated(EnumType.STRING) @Column(nullable = false) private OfferStatus status = OfferStatus.PENDING;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PetSpecies species;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private PetPersonality personality;
+
+    @Column(nullable = false)
+    private boolean variant;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OfferStatus status = OfferStatus.PENDING;
+
     @Column(nullable = false) private Instant createdAt;
     private Instant resolvedAt;
 
-    protected AdoptionOffer() {}
+    @Column(nullable = false, length = 36)
+    private String batchId;
 
-    public AdoptionOffer(User user, PetSpecies species, PetPersonality personality,
+    public AdoptionOffer(User user, String batchId, PetSpecies species, PetPersonality personality,
                          boolean variant, Instant now) {
-        this.user = user; this.species = species; this.personality = personality;
-        this.variant = variant; this.createdAt = now;
+        this.user = user;
+        this.batchId = batchId;
+        this.species = species;
+        this.personality = personality;
+        this.variant = variant;
+        this.createdAt = now;
     }
+
+    protected AdoptionOffer() {}
 
     public void accept(Instant now) { resolve(OfferStatus.ACCEPTED, now); }
     public void decline(Instant now) { resolve(OfferStatus.DECLINED, now); }
-
+    public void expire(Instant now) { resolve(OfferStatus.EXPIRED, now); }
     private void resolve(OfferStatus newStatus, Instant now) {
         this.status = newStatus;
         this.resolvedAt = now;
@@ -73,6 +91,8 @@ public class AdoptionOffer {
     public Instant getResolvedAt() {
         return resolvedAt;
     }
+
+    public String getBatchId() { return batchId; }
 
     public void setId(Long id) {
         this.id = id;

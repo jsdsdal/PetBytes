@@ -1,6 +1,7 @@
 package org.example.backend.ai;
 
 import org.example.backend.personality.pet.PetPersonality;
+import org.example.backend.pet.entity.PetBond;
 import org.example.backend.pet.entity.PetSpecies;
 
 import java.util.List;
@@ -15,5 +16,8 @@ public record AiDialogueContext(
         int happiness,
         int energy,
         List<String> recentEvents,
-        List<String> previousMonologues // NEW: The pet's memory
+        List<String> previousMonologues,
+        String topicSeed,
+        String moodSeed,
+        PetBond petBond
 ) {}

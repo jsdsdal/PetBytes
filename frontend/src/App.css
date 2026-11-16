@@ -317,6 +317,20 @@ body::after {
     100% { transform: translateY(0px); }
 }
 
+/* pet panel */
+.pet-nameplate {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 4px solid var(--ink);
+    font-family: var(--font-header);
+}
+
+.pet-nameplate strong { font-size: 14px; }
+
+.pet-nameplate span { font-size: 8px; opacity: 0.7; }
 
 /* Speech Bubble */
 .speech-bubble {
@@ -447,4 +461,211 @@ progress.stat-bar.low::-webkit-progress-value { background: var(--accent-red); }
     height: 48px;
     background: var(--ink);
     margin: 0 4px;
+}
+
+/* adoption flow */
+
+.offer-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+}
+
+.offer-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.75rem;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    color: inherit;
+    font: inherit;
+}
+
+.offer-card:hover:not(:disabled) {
+    border-color: var(--accent-muted, rgba(255,255,255,0.2));
+}
+
+.offer-card.is-selected {
+    border-color: var(--accent, #fff);
+    background: rgba(255,255,255,0.05);
+}
+
+.offer-card:disabled {
+    cursor: default;
+    opacity: 0.7;
+}
+
+.offer-card .pet-sprite {
+    width: 96px;
+    height: 96px;
+    image-rendering: pixelated;
+    animation: none !important;
+}
+
+.offer-card__species {
+    font-weight: 600;
+}
+
+.offer-card__personality {
+    font-size: 0.8rem;
+    opacity: 0.75;
+}
+
+.offer-card__variant {
+    font-size: 0.75rem;
+    color: gold;
+}
+
+/* --- Collection --- */
+
+.collection-window {
+    top: 40px;
+    left: 140px;
+    width: 520px;
+    height: 460px;
+    z-index: 20;
+}
+
+
+.collection-window .window-content {
+    overflow-y: auto;
+}
+
+.collection-count { margin: 0 0 12px; font-size: 12px; }
+
+.collection-grid {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 12px;
+}
+
+.collection-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 12px;
+    border: 3px solid #000;
+    background: #fff;
+    text-align: center;
+}
+
+.collection-card img { width: 72px; height: 72px; image-rendering: pixelated; }
+
+.dex-number { align-self: flex-start; font-size: 12px; opacity: 0.6; }
+
+.collection-names { opacity: 0.7; }
+
+/*variant*/
+.collection-card.is-variant { border-color: #e0b100; background: #fff8d6; }
+
+/* --- Confirm dialog --- */
+.dialog-backdrop {
+    position: fixed;
+    inset: 0;                         /* dækker hele skærmen */
+    background: rgba(0, 0, 0, 0.35);
+    z-index: 1000;                    /* over alt andet */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog-window {
+    position: relative;
+    width: 380px;
+}
+
+.dialog-content { gap: 16px; text-align: center; }
+
+.dialog-buttons { display: flex; justify-content: center; gap: 16px; }
+
+/* --- window fan --- */
+.window-tabs {
+    display: flex;
+    border-bottom: 4px solid var(--ink);
+}
+
+.tab {
+    flex: 1;
+    padding: 8px;
+    font-family: var(--font-header);
+    font-size: 8px;
+    background: var(--win-bg);
+    border: none;
+    cursor: pointer;
+    opacity: 0.5;
+}
+
+.tab + .tab { border-left: 4px solid var(--ink); }
+
+.tab.is-active { opacity: 1; background: var(--accent-yellow); }
+
+/* --- Daycare-list --- */
+.daycare-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+
+.daycare-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px;
+    border: 3px solid var(--ink);
+    background: #fff;
+}
+
+.daycare-row img { width: 48px; height: 48px; image-rendering: pixelated; }
+
+.daycare-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+
+.daycare-row .dock-icon { width: auto; height: auto; padding: 8px 12px; }
+
+/* dialogue */
+
+
+.pet-window {
+    position: relative;
+}
+
+.speech-bubble {
+    position: absolute;
+    left: 100%;
+    top: 20%;
+    margin-left: 20px;
+
+    width: 250px;
+    background: white;
+    border: 3px solid black;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 1.5 rem;
+    line-height: 1.4;
+    z-index: 10;
+    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
+}
+
+.speech-bubble::before {
+    content: '';
+    position: absolute;
+    left: -12px;
+    top: 20px;
+    border-width: 6px 12px 6px 0;
+    border-style: solid;
+    border-color: transparent black transparent transparent;
+}
+
+.speech-bubble::after {
+    content: '';
+    position: absolute;
+    left: -8px;
+    top: 21px;
+    border-width: 5px 10px 5px 0;
+    border-style: solid;
+    border-color: transparent white transparent transparent;
 }

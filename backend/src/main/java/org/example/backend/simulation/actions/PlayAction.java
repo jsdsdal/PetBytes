@@ -7,7 +7,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PlayAction implements PetAction {
-    private static final int PLAY_AMOUNT = 15;
+    private static final int PLAYER_PLAY = 15;
+    private static final int SELF_PLAY   = 5;
 
     @Override public String name() { return "play"; }
 
@@ -18,5 +19,5 @@ public class PlayAction implements PetAction {
     }
 
     @Override
-    public void execute(Pet pet, PetActionLogService actions, boolean player) { actions.play(pet, PLAY_AMOUNT, player); }
+    public void execute(Pet pet, PetActionLogService actions, boolean player) { actions.play(pet, player ? PLAYER_PLAY : SELF_PLAY, player); }
 }

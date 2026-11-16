@@ -77,7 +77,7 @@ class PetApiIT {
 
     private String login(String username, String password) throws Exception {
         var result = mvc.perform(post("/api/dologin")
-                        .with(httpBasic(username, password))     // ← this line
+                        .with(httpBasic(username, password))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"username\":\"" + username + "\",\"password\":\"" + password + "\"}"))
                 .andReturn();

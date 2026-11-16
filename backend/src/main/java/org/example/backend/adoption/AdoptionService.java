@@ -1,6 +1,7 @@
 package org.example.backend.adoption;
 
 import org.example.backend.adoption.dto.AdoptionOfferResponse;
+import org.example.backend.adoption.dto.AdoptionOffersResponse;
 import org.example.backend.personality.pet.PetPersonality;
 import org.example.backend.pet.PetRepository;
 import org.example.backend.pet.PetStateService;
@@ -21,16 +22,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.Clock;
 import java.time.Duration;
 import java.time.Instant;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
 public class AdoptionService {
 
+    private static final int BATCH_SIZE = 4;
+    private static final int MAX_REROLLS_PER_DAY = 3;
     private static final int MAX_ATTEMPTS = 5;
-    private static final int MAX_DECLINES_PER_DAY = 5;
 
     private final AdoptionOfferRepository offers;
     private final PetRepository pets;
@@ -52,76 +52,74 @@ public class AdoptionService {
     }
 
     @Transactional
-    public AdoptionOfferResponse currentOffer(User user) {
+    public AdoptionOffersResponse currentBatch(User user) {
         requireNoActivePet(user);
-        AdoptionOffer offer = pendingOffer(user).orElseGet(() -> newOffer(user));
-        return respond(offer, user);
-    }
-
-    private Optional<AdoptionOffer> pendingOffer(User user) {
-        return offers.findByUserIdAndStatus(user.getId(), OfferStatus.PENDING);
+        List<AdoptionOffer> pending = offers.findByUserIdAndStatusOrderByCreatedAtAsc(
+                user.getId(), OfferStatus.PENDING);
+        if (pending.isEmpty()) {
+            pending = createBatch(user);
+        }
+        return new AdoptionOffersResponse(
+                pending.stream().map(AdoptionOfferResponse::from).toList(),
+                rerollsLeft(user));
     }
 
     @Transactional
-    public AdoptionOfferResponse decline(User user, Long offerId) {
-        AdoptionOffer offer = requirePending(user, offerId);
-        requireDeclinesLeft(user);
-        offer.decline(clock.instant());
-        return respond(newOffer(user), user);
+    public AdoptionOffersResponse reroll(User user) {
+        requireNoActivePet(user);
+        if (rerollsLeft(user) <= 0) {
+            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "No more rerolls today");
+        }
+        Instant now = clock.instant();
+        offers.findByUserIdAndStatus(user.getId(), OfferStatus.PENDING)
+                .forEach(o -> o.decline(now));
+        List<AdoptionOffer> fresh = createBatch(user);
+        return new AdoptionOffersResponse(
+                fresh.stream().map(AdoptionOfferResponse::from).toList(),
+                rerollsLeft(user));
     }
 
     @Transactional
     public PetResponse accept(User user, Long offerId, String name) {
         requireNoActivePet(user);
-        AdoptionOffer offer = requirePending(user, offerId);
-        offer.accept(clock.instant());
-        Pet pet = pets.save(Pet.adopt(name.strip(), offer.getSpecies(), offer.getPersonality(),
-                offer.isVariant(), user, clock.instant()));
-        logs.save(new ActivityLog(pet, ActivityType.ADOPTED, null, clock.instant(), true));
+        AdoptionOffer chosen = offers.findByUserIdAndStatus(user.getId(), OfferStatus.PENDING)
+                .stream()
+                .filter(o -> o.getId().equals(offerId))
+                .findFirst()
+                .orElseThrow(() -> PetStateService.conflict("No such pending offer"));
+
+        Instant now = clock.instant();
+        chosen.accept(now);
+
+        // hele batch expires - tæller ikke som rerolls
+        offers.findByUserIdAndStatus(user.getId(), OfferStatus.PENDING)
+                .forEach(o -> o.expire(now));
+
+        Pet pet = pets.save(Pet.adopt(name.strip(), chosen.getSpecies(), chosen.getPersonality(),
+                chosen.isVariant(), user, now));
+        logs.save(new ActivityLog(pet, ActivityType.ADOPTED, null, now, true));
         return PetResponse.from(pet);
     }
 
-    private AdoptionOffer requirePending(User user, Long offerId) {
-        AdoptionOffer offer = pendingOffer(user)
-                .orElseThrow(() -> PetStateService.conflict("No pending offer"));
-        if (!offer.getId().equals(offerId)) {
-            throw PetStateService.conflict("This offer is no longer current");
+    // --- helpers ---
+
+    private List<AdoptionOffer> createBatch(User user) {
+        String batchId = java.util.UUID.randomUUID().toString();
+        Set<Combo> avoid = recentCombos(user);
+        List<AdoptionOffer> batch = new ArrayList<>(BATCH_SIZE);
+
+        for (int i = 0; i < BATCH_SIZE; i++) {
+            OfferRoll roll = rollAvoiding(user, avoid);
+            avoid.add(roll.combo());          // also avoid dupes within this batch
+            batch.add(new AdoptionOffer(user, batchId, roll.species(), roll.personality(),
+                    roll.variant(), clock.instant()));
         }
-        return offer;
+        return offers.saveAll(batch);
     }
 
-    private void requireNoActivePet(User user) {
-        if (pets.existsByOwnerIdAndStatus(user.getId(), PetStatus.ACTIVE)) {
-            throw PetStateService.conflict("Shelve your current pet first");
-        }
-    }
-
-    private void requireDeclinesLeft(User user) {
-        if (declinesLeft(user) <= 0) {
-            throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "No more declines today");
-        }
-    }
-
-    private int declinesLeft(User user) {
-        Instant since = clock.instant().minus(Duration.ofHours(24));
-        long used = offers.countByUserIdAndStatusAndResolvedAtAfter(user.getId(), OfferStatus.DECLINED, since);
-        return (int) Math.max(0, MAX_DECLINES_PER_DAY - used);
-    }
-
-    private AdoptionOfferResponse respond(AdoptionOffer offer, User user) {
-        return AdoptionOfferResponse.from(offer, declinesLeft(user));
-    }
-
-    private AdoptionOffer newOffer(User user) {
-        Set<Combo> recent = recentCombos(user);
-        OfferRoll roll = rollAvoiding(user, recent);
-        return offers.save(new AdoptionOffer(user, roll.species(), roll.personality(),
-                roll.variant(), clock.instant()));
-    }
-
-    private OfferRoll rollAvoiding(User user, Set<Combo> recent) {
+    private OfferRoll rollAvoiding(User user, Set<Combo> avoid) {
         OfferRoll roll = roll(user);
-        for (int attempt = 1; attempt < MAX_ATTEMPTS && recent.contains(roll.combo()); attempt++) {
+        for (int attempt = 1; attempt < MAX_ATTEMPTS && avoid.contains(roll.combo()); attempt++) {
             roll = roll(user);
         }
         return roll;
@@ -135,9 +133,21 @@ public class AdoptionService {
     }
 
     private Set<Combo> recentCombos(User user) {
-        return offers.findTop3ByUserIdOrderByCreatedAtDesc(user.getId()).stream()
+        return offers.findTop4ByUserIdOrderByCreatedAtDesc(user.getId()).stream()
                 .map(o -> new Combo(o.getSpecies(), o.getPersonality()))
                 .collect(Collectors.toSet());
+    }
+
+    private int rerollsLeft(User user) {
+        Instant since = clock.instant().minus(Duration.ofHours(24));
+        long used = offers.countDistinctDeclinedBatchesSince(user.getId(), since);
+        return (int) Math.max(0, MAX_REROLLS_PER_DAY - used);
+    }
+
+    private void requireNoActivePet(User user) {
+        if (pets.existsByOwnerIdAndStatus(user.getId(), PetStatus.ACTIVE)) {
+            throw PetStateService.conflict("Shelve your current pet first");
+        }
     }
 
     private record Combo(PetSpecies species, PetPersonality personality) {}
