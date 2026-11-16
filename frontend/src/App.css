@@ -23,8 +23,9 @@ body {
     font-family: var(--font-body);
     font-size: 22px;
     color: var(--ink);
-    height: 100vh;
-    overflow: hidden;
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-attachment: fixed;
     image-rendering: pixelated;
 
     /* Landscape Background */
