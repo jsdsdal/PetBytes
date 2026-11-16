@@ -196,6 +196,7 @@ body::after {
 .window-controls span:nth-child(2) { background: var(--accent-yellow); }
 .window-controls span:nth-child(3) { background: var(--accent-green); }
 
+
 .window-content {
     padding: 16px;
     flex: 1;
